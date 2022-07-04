@@ -1,2 +1,3 @@
-# album-station
-Album Station for WordPress
+# Album Station
+Album Station for WordPress using LightGallery.js
+Added support for Elementor.
