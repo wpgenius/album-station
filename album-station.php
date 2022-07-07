@@ -13,3 +13,32 @@
  */
 
 // Your code starts here.
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+define( 'WBC_DIR_URL', plugin_dir_url( __FILE__ ) );
+define( 'WBC_DIR_PATH', plugin_dir_path( __FILE__ ) );
+
+require 'post-types/album.php';
+require 'includes/shortcode.php';
+
+
+function album_station_css(){
+	wp_enqueue_style( 'album-style', WBC_DIR_URL . '/assets/css/album-station.css' );
+
+}
+add_action( 'admin_menu', 'album_station_css' );
+
+function album_station_js() {
+
+	// I recommend to add additional conditions just to not to load the scipts on each page
+	
+	if ( ! did_action( 'wp_enqueue_media' ) ) {
+		wp_enqueue_media();
+	}
+ 
+ 	wp_enqueue_script( 'myuploadscript', WBC_DIR_URL . '/assets/js/customscript.js', array( 'jquery' ) );
+}
+add_action( 'admin_enqueue_scripts', 'album_station_js' );
