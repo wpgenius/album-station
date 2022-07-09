@@ -106,8 +106,7 @@ function video_meta_box(){
 add_action( 'add_meta_boxes', 'video_meta_box' );
 
 function video_post_meta_callback($post){
-	
-	$value = get_post_meta($post->ID, 'video_post_meta_value', true); ?>
+	 ?>
 	<div class="video-choice as_container">
 		<div class="as_title">
 			<label>Select Video Choice</label>
@@ -123,12 +122,20 @@ function video_post_meta_callback($post){
 
 	<div class="video_settings">
 		<div class="as_container video_ids">
-			<div class="as_title">
-				<label for="youtube_video_id">Enter Video ID's</label>
+			<div class="as_title youtube_video_id">
+				<label for="youtube_video_id">Enter Youtube Video ID's</label>
 			</div>
 			<div>
-				<input style="width:60%; padding:10px !important;" type="text" id="video_id" name="video_id" value="<?php echo $value; ?>" />
+				<input style="width:60%; padding:10px !important;" type="text" id="youtube_video_id" name="youtube_video_id" value="<?php echo get_post_meta($post->ID, 'youtube_video_post_meta_value', true); ?>" />
 			</div>
+
+			<div class="as_title vimeo_video_id">
+				<label for="vimeo_video_id">Enter Vimeo Video ID's</label>
+			</div>
+			<div>
+				<input style="width:60%; padding:10px !important;" type="text" id="vimeo_video_id" name="vimeo_video_id" value="<?php echo get_post_meta($post->ID, 'vimeo_video_post_meta_value', true); ?>" />
+			</div>
+			
 		</div>
 		<div class="as_container video_playlist">
 			<div class="as_title">
@@ -151,9 +158,14 @@ add_action( 'save_post', 'video_save_post_meta' );
 
 function video_save_post_meta( $post_id ){
 
-	if(isset($_POST['video_id']) && $_POST['video_id'] != ''){
-		$mydata =  $_POST['video_id'];
-		update_post_meta($post_id, 'video_post_meta_value', $mydata);
+	if(isset($_POST['youtube_video_id']) && $_POST['youtube_video_id'] != ''){
+		$mydata =  $_POST['youtube_video_id'];
+		update_post_meta($post_id, 'youtube_video_post_meta_value', $mydata);
+	}
+
+	if(isset($_POST['vimeo_video_id']) && $_POST['vimeo_video_id'] != ''){
+		$mydata =  $_POST['vimeo_video_id'];
+		update_post_meta($post_id, 'vimeo_video_post_meta_value', $mydata);
 	}
 
 	if(isset($_POST['playlist_id']) && $_POST['playlist_id'] != ''){
