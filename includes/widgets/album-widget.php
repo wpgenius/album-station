@@ -81,19 +81,24 @@ class Album_Station_widget extends Widget_Base {
 				
 				foreach( $img_arr as $img_id ){
 	
-					$src = wp_get_attachment_image_url($img_id);
-	
 					$img_post = get_post($img_id);
+					
+					$img_title = $img_post->post_title;
+					$img_dec = $img_post->post_content;
+
+					$subhtml = '';
+					ob_start(); ?>
+						<div class="lightGallery-captions">
+							<h4><?php if( $img_title ){echo $img_title; } ?></h4>
+						</div>
 	
+					<?php $subhtml = ob_get_contents();
+						ob_end_clean();
 					$image_list[] = array(
 	
 						'src'=> wp_get_attachment_image_url($img_id, 'full'),
-						//'responsive' => "https://images.unsplash.com/photo-1609342122563-a43ac8917a3a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1609342122563-a43ac8917a3a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
 						'thumb' =>  wp_get_attachment_image_url($img_id),
-						'subHtml'=> '<div class="lightGallery-captions">
-										<h4>'.get_post_meta($img_id, '_wp_attachment_image_alt', true ).'</h4>
-										<p></p>
-									</div>'
+							'subHtml'=> $subhtml
 	
 					);
 	
@@ -118,7 +123,7 @@ class Album_Station_widget extends Widget_Base {
 
 				echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.'">';
 					echo '<div>';
-						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode($merged_gallery).'\'>';
+						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $merged_gallery ).'\'>';
 							echo '<img src="'.$thumbnail.'" />';
 						echo '</a>';
 					echo '</div>';
@@ -130,6 +135,7 @@ class Album_Station_widget extends Widget_Base {
 		<script type="text/javascript">
 			jQuery('.gallery-item').click(function(){
 				var myarr = jQuery(this).data('src');
+				
 					const $dynamicGallery = document.getElementById( jQuery(this).attr('id') );
 					const dynamicGallery = window.lightGallery($dynamicGallery, {
 						dynamic: true,
