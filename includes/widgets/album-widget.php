@@ -12,7 +12,7 @@ class Album_Station_widget extends Widget_Base {
 	}
 	
 	public function get_icon() {
-		return 'fa fa-address-card';
+		return 'eicon-photo-library';
 	}
 	
 	public function get_categories() {
@@ -20,13 +20,13 @@ class Album_Station_widget extends Widget_Base {
 	}
 	
 	public function get_style_depends() {
-	  $styles = [ 'swiper' ];
+	  $styles = [ 'lightgallery-combined' ];
 	
 	  return $styles;
 	}
 	
 	public function get_script_depends() {
-	  $scripts = [ 'as-gallery' ];
+	  $scripts = [ 'lightgallery-medium-zoom' ];
 	
 	  return $scripts;
 	}
