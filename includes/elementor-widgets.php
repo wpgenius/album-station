@@ -30,7 +30,7 @@ class AS_Elementor_Widgets {
 	}
 
 	public function widget_scripts() {
-		
+
 		wp_enqueue_script( 'lightgallery-combined', WBC_DIR_URL . 'assets/js/lightgallery-combined.js', array( 'jquery' ) );
 
 	}
@@ -43,7 +43,7 @@ class AS_Elementor_Widgets {
 
 }
 
-add_action( 'init', 'lbw_elementor_widgets' );
-function lbw_elementor_widgets() {
+add_action( 'init', 'as_elementor_widgets' );
+function as_elementor_widgets() {
 	AS_Elementor_Widgets::get_instance();
 }
