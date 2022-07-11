@@ -6,23 +6,9 @@ function feature_album_shortcode( ){
 		'numberposts'=> -1,
 		 ));
         
-         wp_enqueue_script( 'lightgallery-js', WBC_DIR_URL . 'assets/js/lightgallery.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-video', WBC_DIR_URL . 'assets/js/lg-video.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-fullscreen', WBC_DIR_URL . 'assets/js/lg-fullscreen.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-zoom', WBC_DIR_URL . 'assets/js/lg-zoom.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-caption', WBC_DIR_URL . 'assets/js/lg-relative-caption.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-thubnail', WBC_DIR_URL . 'assets/js/lg-thumbnail.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-autoplay', WBC_DIR_URL . 'assets/js/lg-autoplay.min.js', array( 'jquery' ) );
-         wp_enqueue_script( 'lightgallery-medium-zoom', WBC_DIR_URL . 'assets/js/lg-medium-zoom.min.js', array( 'jquery' ) );
+        wp_enqueue_script( 'lightgallery-combined', WBC_DIR_URL . 'assets/js/lightgallery-combined.js', array( 'jquery' ) );
 
-         wp_enqueue_style( 'album-style', WBC_DIR_URL . '/assets/css/album-station.css' );
-         wp_enqueue_style( 'lightgallery-css', WBC_DIR_URL . 'assets/css/lightgallery-bundle.min.css' );
-         wp_enqueue_style( 'lightgallery-lgvideo', WBC_DIR_URL . 'assets/css/lg-video.min.css' );
-         wp_enqueue_style( 'lightgallery-thumbnail', WBC_DIR_URL . 'assets/css/lg-thumbnail.min.css' );
-         wp_enqueue_style( 'lightgallery-zoom', WBC_DIR_URL . 'assets/css/lg-zoom.min.css' );
-         wp_enqueue_style( 'lightgallery-autoplay', WBC_DIR_URL . 'assets/css/lg-autoplay.min.css' );
-         wp_enqueue_style( 'lightgallery-autoplay', WBC_DIR_URL . 'assets/css/lg-relative-caption.min.css' );
-         wp_enqueue_style( 'lightgallery-medium-zoom', WBC_DIR_URL . 'assets/css/lg-medium-zoom.min.css' );
+        wp_enqueue_style( 'lightgallery-medium-zoom', WBC_DIR_URL . 'assets/css/lightgallery.css' );
 ?>
 
 <?php
