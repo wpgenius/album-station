@@ -388,30 +388,37 @@ class Album_Station_widget extends Widget_Base {
 			'numberposts'=> 1000,
 			 ));
 	?>
+			<#
+			 	var grid = '';
+				if ( settings.grid_layout == 3 ){
+					grid = 'col-md-4';
+				} else{
+					grid = 'col-md-3';
+				}
 	
+			#>
 	<?php
+		
 		if($mypost){
 			foreach( $mypost as $post ){
+				setup_postdata( $post );
 				$post_id = $post->ID;
-				$thumbnail = get_the_post_thumbnail_url($post_id);
-				$img_ids = get_post_meta($post_id, 'image_post_meta_value', true);
+				$thumbnail = get_the_post_thumbnail_url($post_id); ?>
 	
-				$video_ids = explode( ',' , get_post_meta($post_id, 'youtube_video_post_meta_value', true));
-				
-				$img_arr = explode(',', $img_ids);
-				$image_list = array();
-
-				
-
-				echo '<div class="col-xs-12 col-sm-6 ">';
-					echo '<div>';
-						echo '<a id="album-'.$post_id.'" ';
-							echo '<img src="'.$thumbnail.'" />';
-						echo '</a>';
-					echo '</div>';
-				echo '</div>';
+				<div class="album-station col-xs-12 col-sm-6 {{grid}}">
+					<div class="image-wrapper">
+						<a id="album-<?php echo $post_id; ?>"  class="gallery-item" >
+							<img src="<?php echo $thumbnail; ?>" />
+						</a>
+					</div>
+					<div class='album_title'>
+						<{{settings.heading_type}}><?php the_title(); ?> </{{settings.heading_type}}>
+					</div>
+				</div>
+			<?php	
 			}
 		}
+		wp_reset_postdata();
     }
 	
 	
