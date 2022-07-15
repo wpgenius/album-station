@@ -112,13 +112,13 @@ class Album_Station_widget extends Widget_Base {
 		$this->add_control(
 			'grid_layout',
 
-		[
-			'type' => \Elementor\Controls_Manager::SELECT,
-			'label' => esc_html__( 'Grid Layout', 'elementor' ),
-			'options' => [
-				'3' => esc_html__( '3', 'elementor' ),
-				'4' => esc_html__( '4', 'elementor' ),
-			],
+			[
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'label' => esc_html__( 'Grid Layout', 'elementor' ),
+				'options' => [
+					'3' => esc_html__( '3', 'elementor' ),
+					'4' => esc_html__( '4', 'elementor' ),
+				],
 				'default' => '4',
 			]
 		);
@@ -203,8 +203,8 @@ class Album_Station_widget extends Widget_Base {
 				'name' => 'border',
 				'label' => esc_html__( 'Border', 'elementor' ),
 				'selector' => '.image-wrapper',
-		]
-	);
+			]
+		);
 
 		$this->add_responsive_control(
 			'title_padding',
@@ -223,7 +223,7 @@ class Album_Station_widget extends Widget_Base {
 	
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-
+		global $post;
         $mypost= get_posts( array(
 			'post_type' => 'album',
 			'numberposts'=> 1000,
@@ -233,44 +233,43 @@ class Album_Station_widget extends Widget_Base {
 	<?php
 		if($mypost){
 			foreach( $mypost as $post ){
+				setup_postdata( $post );
 				$post_id = $post->ID;
 				$thumbnail = get_the_post_thumbnail_url($post_id);
 				$img_ids = get_post_meta($post_id, 'image_post_meta_value', true);
-	
-				$video_ids = explode( ',' , get_post_meta($post_id, 'youtube_video_post_meta_value', true));
-				
+					
 				$img_arr = explode(',', $img_ids);
 				$image_list = array();
 				
 				if($img_ids){
 
-				foreach( $img_arr as $img_id ){
-	
-					$img_post = get_post($img_id);
-					
-					$img_title = $img_post->post_title;
-					$img_dec = $img_post->post_content;
+					foreach( $img_arr as $img_id ){
+		
+						$img_post = get_post($img_id);
+						
+						$img_title = $img_post->post_title;
+						$img_dec = $img_post->post_content;
 
-					$subhtml = '';
-					ob_start(); ?>
-						<div class="lightGallery-captions">
-							<h4><?php if( $img_title ){echo $img_title; } ?></h4>
-						</div>
-	
-					<?php $subhtml = ob_get_contents();
-						ob_end_clean();
-					$image_list[] = array(
-	
-						'src'=> wp_get_attachment_image_url($img_id, 'full'),
-						'thumb' =>  wp_get_attachment_image_url($img_id),
-							'subHtml'=> $subhtml
-	
-					);
-	
-				}
+						$subhtml = '';
+						ob_start(); ?>
+							<div class="lightGallery-captions">
+								<h4><?php if( $img_title ){echo $img_title; } ?></h4>
+							</div>
+
+						<?php $subhtml = ob_get_contents();
+							ob_end_clean();
+							$image_list[] = array(
+			
+								'src'=> wp_get_attachment_image_url($img_id, 'full'),
+								'thumb' =>  wp_get_attachment_image_url($img_id),
+								'subHtml'=> $subhtml
+								
+							);
+		
+					}
 					$gallery = $image_list;
 				}
-	
+
 				if(( $settings["is_video"] ==='yes' )){
 
 					if( get_post_meta( $post->ID,'video_choice', true )== 'single'){
@@ -313,7 +312,7 @@ class Album_Station_widget extends Widget_Base {
 						$gallery = $image_list;
 						$api_key = 'AIzaSyApK9-NJu45Ai2DTlsd81LFRL-5z_N06hc';
 						$playlist_id = get_post_meta( $post->ID,'playlist_id', true );
-	
+
 						$api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlist_id . '&key=' . $api_key;
 						$playlist_data = json_decode(file_get_contents($api_url),true);
 						if($playlist_data) { 
@@ -324,15 +323,15 @@ class Album_Station_widget extends Widget_Base {
 									'src' => "//www.youtube.com/watch?v=".$id,
 									'poster' => "https://img.youtube.com/vi/".$id."/maxresdefault.jpg",
 									'thumb' => "https://img.youtube.com/vi/".$id."/maxresdefault.jpg"
-							);
-						}
+								);
+							}
 							$gallery = (count($image_list) > 0) ? array_merge( $image_list, $youtube_playlist ) : $youtube_playlist;
-					}
-	
+						}
+
 					}
 				}
 				
-				
+
 				$grid_layout = ( $settings['grid_layout'] =='3' ) ? 'col-md-4': 'col-md-3';
 
 				echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.'">';
@@ -343,12 +342,14 @@ class Album_Station_widget extends Widget_Base {
 					echo '</div>';
 					echo "<div class='album_title' style='text-align:".esc_attr($settings['alignment_text'])."'>";
 						echo '<'.$settings["heading_type"].'>'.get_the_title().'</'.$settings["heading_type"].'>';
-				echo '</div>';
+					echo '</div>';
 				echo '</div>';
 
 			}
+			wp_reset_postdata();
+			
 		}
-	
+
 		$plugins = array();
 		( $settings["is_video"] ==='yes' ) ? $plugins[]='lgVideo' :'';
 		( $settings["is_full_screen"] ==='yes' ) ? $plugins[]='lgFullscreen' :'';
@@ -363,31 +364,31 @@ class Album_Station_widget extends Widget_Base {
 			jQuery('.gallery-item').click(function(){
 				var myarr = jQuery(this).data('src');
 				
-					const $dynamicGallery = document.getElementById( jQuery(this).attr('id') );
-					const dynamicGallery = window.lightGallery($dynamicGallery, {
-						dynamic: true,
-						slideDelay: 400,
-						autoPlay: true,
-						download: false,
-						share: false,
-						fullScreen :true,
-	
+				const $dynamicGallery = document.getElementById( jQuery(this).attr('id') );
+				const dynamicGallery = window.lightGallery($dynamicGallery, {
+					dynamic: true,
+					slideDelay: 400,
+					autoPlay: true,
+					download: false,
+					share: false,
+					fullScreen :true,
+
 					plugins: [<?php echo $plugin_str; ?>],
-						dynamicEl: myarr
-						});
-						dynamicGallery.openGallery(0);
+					dynamicEl: myarr
+					});
+					dynamicGallery.openGallery(0);
 				});
 				</script>
 		<?php
 
 	}
 	
-	protected function content_template() {
+	protected function content_template() { 
 		$mypost= get_posts( array(
 			'post_type' => 'album',
 			'numberposts'=> 1000,
 			 ));
-	?>
+		?>
 			<#
 			 	var grid = '';
 				if ( settings.grid_layout == 3 ){
@@ -395,16 +396,16 @@ class Album_Station_widget extends Widget_Base {
 				} else{
 					grid = 'col-md-3';
 				}
-	
+
 			#>
-	<?php
+		<?php
 		
 		if($mypost){
 			foreach( $mypost as $post ){
 				setup_postdata( $post );
 				$post_id = $post->ID;
 				$thumbnail = get_the_post_thumbnail_url($post_id); ?>
-	
+
 				<div class="album-station col-xs-12 col-sm-6 {{grid}}">
 					<div class="image-wrapper">
 						<a id="album-<?php echo $post_id; ?>"  class="gallery-item" >
@@ -417,7 +418,7 @@ class Album_Station_widget extends Widget_Base {
 				</div>
 			<?php	
 			}
-		}
+		}		
 		wp_reset_postdata();
     }
 	
