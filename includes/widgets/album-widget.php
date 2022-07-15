@@ -336,12 +336,16 @@ class Album_Station_widget extends Widget_Base {
 				$grid_layout = ( $settings['grid_layout'] =='3' ) ? 'col-md-4': 'col-md-3';
 
 				echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.'">';
-					echo '<div>';
-						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $merged_gallery ).'\'>';
+					echo '<div class="image-wrapper">';
+						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $gallery ).'\'>';
 							echo '<img src="'.$thumbnail.'" />';
 						echo '</a>';
 					echo '</div>';
+					echo "<div class='album_title' style='text-align:".esc_attr($settings['alignment_text'])."'>";
+						echo '<'.$settings["heading_type"].'>'.get_the_title().'</'.$settings["heading_type"].'>';
 				echo '</div>';
+				echo '</div>';
+
 			}
 		}
 	
