@@ -349,6 +349,15 @@ class Album_Station_widget extends Widget_Base {
 			}
 		}
 	
+		$plugins = array();
+		( $settings["is_video"] ==='yes' ) ? $plugins[]='lgVideo' :'';
+		( $settings["is_full_screen"] ==='yes' ) ? $plugins[]='lgFullscreen' :'';
+		( $settings["is_thumbnail"] ==='yes' ) ? $plugins[]='lgThumbnail' :'';
+		( $settings["is_zoom"] ==='yes' ) ? $plugins[]='lgZoom' :'';
+		( $settings["is_autoplay"] ==='yes' ) ? $plugins[]='lgAutoplay' :'';
+		
+		$plugin_str = implode(',', $plugins);
+
 		?>
 		<script type="text/javascript">
 			jQuery('.gallery-item').click(function(){
@@ -363,7 +372,7 @@ class Album_Station_widget extends Widget_Base {
 						share: false,
 						fullScreen :true,
 	
-						plugins: [lgVideo, lgFullscreen, lgThumbnail, lgZoom, lgAutoplay],
+					plugins: [<?php echo $plugin_str; ?>],
 						dynamicEl: myarr
 						});
 						dynamicGallery.openGallery(0);
