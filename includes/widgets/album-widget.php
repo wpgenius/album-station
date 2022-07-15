@@ -242,6 +242,8 @@ class Album_Station_widget extends Widget_Base {
 				$img_arr = explode(',', $img_ids);
 				$image_list = array();
 				
+				if($img_ids){
+
 				foreach( $img_arr as $img_id ){
 	
 					$img_post = get_post($img_id);
@@ -265,6 +267,8 @@ class Album_Station_widget extends Widget_Base {
 	
 					);
 	
+				}
+					$gallery = $image_list;
 				}
 	
 					$video_list = array();
