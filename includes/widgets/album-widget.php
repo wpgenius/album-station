@@ -271,20 +271,67 @@ class Album_Station_widget extends Widget_Base {
 					$gallery = $image_list;
 				}
 	
-					$video_list = array();
-					if( get_post_meta( $post_id, 'video_post_meta_value', true ) ){
-						foreach( $video_ids as $video ){
-							$video_url = "//www.youtube.com/watch?v=".$video;
-	
-							$video_list[] = array(
-								'src' => "//www.youtube.com/watch?v=".$video,
-								'poster' => "https://img.youtube.com/vi/".$video."/maxresdefault.jpg",
-								'thumb' => "https://img.youtube.com/vi/".$video."/maxresdefault.jpg"
+				if(( $settings["is_video"] ==='yes' )){
+
+					if( get_post_meta( $post->ID,'video_choice', true )== 'single'){
+						
+						$youtube_video_list = array();
+
+						if( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ) ){
+
+							parse_str( parse_url( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ), PHP_URL_QUERY), $id ) ;
+							$youtube_video_id = $id['v'];
+
+							$youtube_video_list[] = array(
+								'src' => "//www.youtube.com/watch?v=".$youtube_video_id,
+								'poster' => "https://img.youtube.com/vi/".$youtube_video_id."/maxresdefault.jpg",
+								'thumb' => "https://img.youtube.com/vi/".$youtube_video_id."/maxresdefault.jpg"
 							);
 						}
+
+						$vimeo_video_list = array();
+
+						if( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ) ){
+							
+							$url = explode("/", parse_url( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ), PHP_URL_PATH));
+							$vimeo_video_id = (int)$url[count($url)-1];
+
+							$hash = unserialize(file_get_contents("http://vimeo.com/api/v2/video/$vimeo_video_id.php"));
+							$img = $hash[0]['thumbnail_medium']; 
+
+							$vimeo_video_list[] = array(
+								'src' => "//vimeo.com/".$vimeo_video_id,
+								'poster' => $img,
+								'thumb' => $img
+							);
+						}
+
+						$merged_videos = array_merge( $youtube_video_list, $vimeo_video_list );
+
+						$gallery = (count($image_list) > 0) ? array_merge( $image_list, $merged_videos ) : $merged_videos ;
+					} else {
+						$gallery = $image_list;
+						$api_key = 'AIzaSyApK9-NJu45Ai2DTlsd81LFRL-5z_N06hc';
+						$playlist_id = get_post_meta( $post->ID,'playlist_id', true );
+	
+						$api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlist_id . '&key=' . $api_key;
+						$playlist_data = json_decode(file_get_contents($api_url),true);
+						if($playlist_data) { 
+							$youtube_playlist = array();
+							foreach ($playlist_data['items'] as $item) { 
+								$id = $item['snippet']['resourceId']['videoId'] ;
+								$youtube_playlist[] = array(
+									'src' => "//www.youtube.com/watch?v=".$id,
+									'poster' => "https://img.youtube.com/vi/".$id."/maxresdefault.jpg",
+									'thumb' => "https://img.youtube.com/vi/".$id."/maxresdefault.jpg"
+							);
+						}
+							$gallery = (count($image_list) > 0) ? array_merge( $image_list, $youtube_playlist ) : $youtube_playlist;
 					}
 	
-					$merged_gallery = array_merge( $image_list, $video_list );
+					}
+				}
+				
 				
 				$grid_layout = ( $settings['grid_layout'] =='3' ) ? 'col-md-4': 'col-md-3';
 
