@@ -41,6 +41,75 @@ class Album_Station_widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'gallery_options',
+			[
+				'label' => esc_html__( 'Gallery Control Settings', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'is_video',
+			[
+				'label' => esc_html__( 'Show videos', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+		
+		$this->add_control(
+			'is_full_screen',
+			[
+				'label' => esc_html__( 'Full Screen', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'is_thumbnail',
+			[
+				'label' => esc_html__( 'Show Thumbnails', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'is_zoom',
+			[
+				'label' => esc_html__( 'Enable Zoom', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
+			'is_autoplay',
+			[
+				'label' => esc_html__( 'Enable Autoplay', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
 			'grid_layout',
 
 		[
@@ -50,10 +119,104 @@ class Album_Station_widget extends Widget_Base {
 				'3' => esc_html__( '3', 'elementor' ),
 				'4' => esc_html__( '4', 'elementor' ),
 			],
-			'default' => 'no',
+				'default' => '4',
+			]
+		);
+
+		$this->add_control(
+			'more_options',
+			[
+				'label' => esc_html__( 'Additional Options', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'heading_type',
+
+			[
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'label' => esc_html__( 'Heading', 'elementor' ),
+				'options' => [
+					'h1' => esc_html__( 'h1', 'elementor' ),
+					'h2' => esc_html__( 'h2', 'elementor' ),
+					'h3' => esc_html__( 'h3', 'elementor' ),
+					'h4' => esc_html__( 'h4', 'elementor' ),
+					'h5' => esc_html__( 'h5', 'elementor' ),
+					'h6' => esc_html__( 'h6', 'elementor' ),
+				],
+				'default' => 'h3',
+			]
+		);
+
+
+		$this->add_control(
+			'text_color',
+			[
+				'label' => esc_html__( 'Title Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.album_title {{heading_type}}' => 'color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_control(
+			'alignment_text',
+			[
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'label' => esc_html__( 'Alignment', 'elementor' ),
+				'options' => [
+					'left' => [
+						'title' => esc_html__( 'Left', 'elementor' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__( 'Center', 'elementor' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__( 'Right', 'elementor' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'center',
+				'toggle' => false,
+				'selectors' => array(
+					'.album_title' => 'text-align: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'content_typography',
+				'selector' => '.album_title',
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Border::get_type(),
+			[
+				'name' => 'border',
+				'label' => esc_html__( 'Border', 'elementor' ),
+				'selector' => '.image-wrapper',
 		]
 	);
 
+		$this->add_responsive_control(
+			'title_padding',
+			[
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'label' => esc_html__( 'Padding', 'plugin-name' ),
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'.image-wrapper' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
 
 		$this->end_controls_section();
 	}
