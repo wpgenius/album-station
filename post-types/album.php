@@ -50,6 +50,42 @@ function album_init() {
 		]
 	);
 
+	$labels = array(																														'name'                       => _x( 'Product Categories', 'Product Categories', 'crezza' ),
+		'singular_name'              => _x( 'Category', 'Album Category', 'album-station' ),
+		'menu_name'                  => __( 'Categories', 'album-station' ),
+		'all_items'                  => __( 'All Items', 'album-station' ),
+		'parent_item'                => __( 'Parent Item', 'album-station' ),
+		'parent_item_colon'          => __( 'Parent Item:', 'album-station' ),
+		'new_item_name'              => __( 'New Album Category', 'album-station' ),
+		'add_new_item'               => __( 'Add New Album Category', 'album-station' ),
+		'edit_item'                  => __( 'Edit Category', 'album-station' ),
+		'update_item'                => __( 'Update Album Category', 'album-station' ),
+		'view_item'                  => __( 'View Category', 'album-station' ), 'separate_items_with_commas' => __( 'Separate items with commas', 'album-station' ),
+		'add_or_remove_items'        => __( 'Add or remove Album', 'album-station' ),
+		'choose_from_most_used'      => __( 'Choose from the most used', 'album-station' ),
+		'popular_items'              => __( 'Popular Album Categories', 'album-station' ),
+		'search_items'               => __( 'Search Album', 'album-station' ),
+		'not_found'                  => __( 'Not Found', 'album-station' ),		
+		'no_terms'                   => __( 'No items', 'album-station' ),		
+		'items_list'                 => __( 'Album list', 'album-station' ),		
+		'items_list_navigation'      => __( 'Album list navigation', 'album-station' ),	
+	);
+
+    $args = array(		
+        'labels'                     => $labels,		
+        'hierarchical'               => true,		
+        'public'                     => false,		
+        'show_ui'                    => true,		
+        'show_admin_column'          => true,		
+        'show_in_nav_menus'          => true,				
+        'rewrite'					 => array(											
+            'slug'                       => 'catalogue',											
+            'with_front'                 => false,											
+            'hierarchical'               => true,										
+        ),	
+    );
+    register_taxonomy( 'album_category', array( 'album' ), $args );
+
 }
 
 add_action( 'init', 'album_init' );
