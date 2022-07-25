@@ -86,6 +86,18 @@ class Album_Station_widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'hide_thumbnail_on_fullscreen',
+			[
+				'label' => esc_html__( 'Hide Thumbnails on Fullscreen mode', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_control(
 			'is_zoom',
 			[
 				'label' => esc_html__( 'Enable Zoom', 'plugin-name' ),
@@ -366,6 +378,7 @@ class Album_Station_widget extends Widget_Base {
 				
 				const $dynamicGallery = document.getElementById( jQuery(this).attr('id') );
 				const dynamicGallery = window.lightGallery($dynamicGallery, {
+					addClass: <?php echo ( $settings["hide_thumbnail_on_fullscreen"] ==='yes' ) ? "'hide_thumbnail_on_fullscreen'" : "'display_thumbnail_on_fullscreen'" ?>,
 					dynamic: true,
 					slideDelay: 400,
 					autoPlay: true,

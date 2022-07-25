@@ -43,6 +43,13 @@
 .lg-sub-html h4 {
     color: #eee !important;
 }
+.hide_thumbnail_on_fullscreen .lg-fullscreen-on .lg-components{
+    display: none;
+}
+.hide_thumbnail_on_fullscreen .lg-fullscreen-on .lg-content {
+    top: 0 !important;
+    bottom: 0 !important;
+  }
 
 .col-xs-12 {
     float: left;
