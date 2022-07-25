@@ -32,7 +32,7 @@
     transform: scale(1.2);transition-duration: 0.4s;
 }
 
-.album-station div {
+.album-station .image-gallery {
     overflow: hidden;
 }
 
