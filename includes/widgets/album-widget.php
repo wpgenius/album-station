@@ -230,6 +230,223 @@ class Album_Station_widget extends Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'filter_settings',
+			[
+				'label' => esc_html__( 'Filter Settings', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'show_filters',
+			[
+				'label' => esc_html__( 'Show Filters', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__( 'Yes', 'your-plugin' ),
+				'label_off' => esc_html__( 'No', 'your-plugin' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+		$this->add_responsive_control(
+			'isotope_title_padding',
+			[
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'label' => esc_html__( 'Padding', 'plugin-name' ),
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'.filter_buttons' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'isotope_title_margin',
+			[
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'label' => esc_html__( 'Margin', 'plugin-name' ),
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'.filter_buttons' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Border::get_type(),
+			[
+				'name' => 'filter_border',
+				'label' => esc_html__( 'Filter Border', 'elementor' ),
+				'selector' => '.filter_buttons',
+			]
+		);
+
+		$this->add_responsive_control(
+			'isotope_filter_border_radius',
+			[
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'label' => esc_html__( 'Filter border radius', 'plugin-name' ),
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'.filter_buttons' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'isotop_alignment_text',
+			[
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'label' => esc_html__( 'Filter Alignment', 'elementor' ),
+				'options' => [
+					'left' => [
+						'title' => esc_html__( 'Left', 'elementor' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__( 'Center', 'elementor' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__( 'Right', 'elementor' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'center',
+				'toggle' => false,
+				'selectors' => array(
+					'.button-group' => 'text-align: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_responsive_control(
+			'isotope_filter_spacing',
+			[
+				'label' => esc_html__( 'Spacing', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::SLIDER,
+				'size_units' => [ 'px', '%' ],
+				'range' => [
+					'px' => [
+						'min' => 0,
+						'max' => 100,
+						'step' => 5,
+					],
+					'%' => [
+						'min' => 0,
+						'max' => 10,
+					],
+				],
+				'default' => [
+					'unit' => 'px',
+					'size' => 30,
+				],
+				'selectors' => [
+					'.button-group' => 'margin-bottom: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+		
+		$this->start_controls_tabs(
+			'style_tabs'
+		);
+
+		$this->start_controls_tab(
+			'style_normal_tab',
+			[
+				'label' => esc_html__( 'Normal', 'plugin-name' ),
+			]
+		);
+
+		$this->add_control(
+			'isotope_text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.filter_buttons' => 'color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_control(
+			'isotope_background_color',
+			[
+				'label' => esc_html__( 'Background Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.filter_buttons' => 'background-color: {{VALUE}};',
+				),
+			]
+		);
+		
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'style_hover_tab',
+			[
+				'label' => esc_html__( 'Hover', 'plugin-name' ),
+			]
+		);
+
+		$this->add_control(
+			'isotope_hover_text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.filter_buttons:hover' => 'color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_control(
+			'isotope_hover_background_color',
+			[
+				'label' => esc_html__( 'Background Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.filter_buttons:hover' => 'background-color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'style_active_tab',
+			[
+				'label' => esc_html__( 'Active', 'plugin-name' ),
+			]
+		);
+
+		$this->add_control(
+			'isotope_active_text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.is-checked' => 'color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->add_control(
+			'isotope_active_background_color',
+			[
+				'label' => esc_html__( 'Background Color', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => array(
+					'.is-checked' => 'background-color: {{VALUE}};',
+				),
+			]
+		);
+
+		$this->end_controls_tab();
+
 		$this->end_controls_section();
 	}
 	
@@ -239,7 +456,7 @@ class Album_Station_widget extends Widget_Base {
         $mypost= get_posts( array(
 			'post_type' => 'album',
 			'numberposts'=> 1000,
-			 ));
+		));
 		$terms_name=  get_terms( array(
 			'taxonomy' => 'album_category',
 			'hide_empty' => false
@@ -359,24 +576,24 @@ class Album_Station_widget extends Widget_Base {
 				$grid_layout = ( $settings['grid_layout'] =='3' ) ? 'col-md-4': 'col-md-3';
 				$term_list = wp_get_post_terms( $post->ID, 'album_category', array( 'fields' => 'slugs' ) );
 					echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.' '.implode(' ', $term_list).'">';
-					echo '<div class="image-wrapper">';
+						echo '<div class="image-wrapper">';
 							echo '<div class="gallery">';
-						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $gallery ).'\'>';
-							echo '<img src="'.$thumbnail.'" />';
-						echo '</a>';
+							echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $gallery ).'\'>';
+								echo '<img src="'.$thumbnail.'" />';
+							echo '</a>';
+							echo '</div>';
+						echo '</div>';
+						echo "<div class='album_title' style='text-align:".esc_attr($settings['alignment_text'])."'>";
+							echo '<'.$settings["heading_type"].'>'.get_the_title().'</'.$settings["heading_type"].'>';
 						echo '</div>';
 					echo '</div>';
-					echo "<div class='album_title' style='text-align:".esc_attr($settings['alignment_text'])."'>";
-						echo '<'.$settings["heading_type"].'>'.get_the_title().'</'.$settings["heading_type"].'>';
-					echo '</div>';
-				echo '</div>';
 
 			}
 			wp_reset_postdata();
 			
 		} ?>
 		</div>
-
+		
 	<?php
 		$plugins = array();
 		( $settings["is_video"] ==='yes' ) ? $plugins[]='lgVideo' :'';
