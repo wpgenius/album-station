@@ -240,8 +240,21 @@ class Album_Station_widget extends Widget_Base {
 			'post_type' => 'album',
 			'numberposts'=> 1000,
 			 ));
+		$terms_name=  get_terms( array(
+			'taxonomy' => 'album_category',
+			'hide_empty' => false
+		));		
+		
+		if(( $settings["show_filters"] ==='yes' )){
+			echo '<div class="button-group filter-button-group">';
+					foreach( $terms_name as $my_term ){ 
+						$slug = $my_term->slug; 
+						echo '<span data-filter=".'.$slug.'" class="filter_buttons">'.$my_term->name.'</span>';
+					} 
+			echo '</div>';
+		}
 	?>
-	
+	<div class="album-grid">
 	<?php
 		if($mypost){
 			foreach( $mypost as $post ){
@@ -343,12 +356,11 @@ class Album_Station_widget extends Widget_Base {
 					}
 				}
 				
-
 				$grid_layout = ( $settings['grid_layout'] =='3' ) ? 'col-md-4': 'col-md-3';
-
-				echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.'">';
+				$term_list = wp_get_post_terms( $post->ID, 'album_category', array( 'fields' => 'slugs' ) );
+					echo '<div class="album-station col-xs-12 col-sm-6 '.$grid_layout.' '.implode(' ', $term_list).'">';
 					echo '<div class="image-wrapper">';
-						echo '<div class="image-gallery">';
+							echo '<div class="gallery">';
 						echo '<a id="album-'.$post_id.'"  class="gallery-item" data-src=\''.json_encode( $gallery ).'\'>';
 							echo '<img src="'.$thumbnail.'" />';
 						echo '</a>';
@@ -362,8 +374,10 @@ class Album_Station_widget extends Widget_Base {
 			}
 			wp_reset_postdata();
 			
-		}
+		} ?>
+		</div>
 
+	<?php
 		$plugins = array();
 		( $settings["is_video"] ==='yes' ) ? $plugins[]='lgVideo' :'';
 		( $settings["is_full_screen"] ==='yes' ) ? $plugins[]='lgFullscreen' :'';
@@ -403,6 +417,11 @@ class Album_Station_widget extends Widget_Base {
 			'post_type' => 'album',
 			'numberposts'=> 1000,
 			 ));
+
+		$terms_name=  get_terms( array(
+			'taxonomy' => 'album_category',
+			'hide_empty' => false
+		));	
 		?>
 			<#
 			 	var grid = '';
@@ -412,9 +431,20 @@ class Album_Station_widget extends Widget_Base {
 					grid = 'col-md-3';
 				}
 
+			if(settings.show_filters=='yes'){
+			
 			#>
 		<?php
 		
+		echo '<div class="button-group filter-button-group">';
+				foreach( $terms_name as $my_term ){ 
+					$slug = $my_term->slug; 
+					echo '<a data-filter=".'.$slug.'" class="filter_buttons">'.$my_term->name.'</a>';
+				} 
+		echo '</div>';
+		?>
+			<# } #>
+		<?php
 		if($mypost){
 			foreach( $mypost as $post ){
 				setup_postdata( $post );

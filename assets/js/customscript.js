@@ -55,7 +55,7 @@ jQuery(function($){
 jQuery(document).ready(function(){
 
     jQuery("input[name='video_choice']").change( function(){
-        var videoChoice = jQuery("input[name='video_choice']:checked").val();console.log(videoChoice);
+        var videoChoice = jQuery("input[name='video_choice']:checked").val();
         if(videoChoice=='single'){
            jQuery('.video_playlist').hide(); 
            jQuery('.video_ids').show(); 
@@ -65,5 +65,29 @@ jQuery(document).ready(function(){
 
         }
     });
+
     jQuery( "input[name='video_choice']:checked" ).trigger( "change" );
+    
+    var jQuerygrid = jQuery('.album-grid').isotope({
+        itemSelector: '.album-station',
+        layoutMode: 'fitRows',
+        percentPosition: true,
+        
+    });
+    jQuery('.filter-button-group').on( 'click', 'span', function() {
+        var filterValue = jQuery(this).attr('data-filter');
+        jQuerygrid.isotope({ filter: filterValue });
+    });
+
+    jQuery('.button-group').each( function( i, buttonGroup ) {
+        var jQuerybuttonGroup = jQuery( buttonGroup );
+        jQuerybuttonGroup.on( 'click', 'span', function() {
+            jQuerybuttonGroup.find('.is-checked').removeClass('is-checked');
+            jQuery( this ).addClass('is-checked');
+        });
+    });
 });
+
+jQuery( window ).load(function() {
+	jQuery(".button-group a:first-child").trigger('click');
+});	

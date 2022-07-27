@@ -32,7 +32,8 @@ class AS_Elementor_Widgets {
 	public function widget_scripts() {
 
 		wp_enqueue_script( 'lightgallery-combined', WBC_DIR_URL . 'assets/js/lightgallery-combined.js', array( 'jquery' ) );
-
+		wp_enqueue_script( 'isotope', WBC_DIR_URL . 'assets/js/isotope.js', array( 'jquery' ) );
+		wp_enqueue_script( 'customscript', WBC_DIR_URL . 'assets/js/customscript.js', array( 'jquery' ) );
 	}
 
 	public function register_widgets() {

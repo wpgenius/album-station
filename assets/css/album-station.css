@@ -32,7 +32,7 @@
     transform: scale(1.2);transition-duration: 0.4s;
 }
 
-.album-station .image-gallery {
+.album-station .gallery {
     overflow: hidden;
 }
 
@@ -50,6 +50,9 @@
     top: 0 !important;
     bottom: 0 !important;
   }
+a.filter_buttons:hover {
+    cursor: pointer;
+}
 
 .col-xs-12 {
     float: left;
