@@ -143,7 +143,7 @@ class Album_Station_widget extends Widget_Base {
 				'separator' => 'before',
 			]
 		);
-
+		
 		$this->add_control(
 			'heading_type',
 
@@ -349,7 +349,7 @@ class Album_Station_widget extends Widget_Base {
 				],
 			]
 		);
-		
+
 		$this->add_group_control(
 			\Elementor\Group_Control_Typography::get_type(),
 			[
@@ -467,7 +467,7 @@ class Album_Station_widget extends Widget_Base {
 		));
 		$terms_name=  get_terms( array(
 			'taxonomy' => 'album_category',
-			'hide_empty' => false
+			'hide_empty' => true
 		));		
 		
 		if(( $settings["show_filters"] ==='yes' )){
@@ -485,8 +485,9 @@ class Album_Station_widget extends Widget_Base {
 			foreach( $mypost as $post ){
 				setup_postdata( $post );
 				$post_id = $post->ID;
-				$thumbnail = get_the_post_thumbnail_url($post_id);
-				$img_ids = get_post_meta($post_id, 'image_post_meta_value', true);
+				add_image_size( 'album-size', 280, 185, true );
+				$thumbnail = get_the_post_thumbnail_url( $post_id, 'album-size' );
+				$img_ids = get_post_meta( $post_id, 'image_post_meta_value', true );
 					
 				$img_arr = explode(',', $img_ids);
 				$image_list = array();
@@ -560,7 +561,7 @@ class Album_Station_widget extends Widget_Base {
 						$gallery = (count($image_list) > 0) ? array_merge( $image_list, $merged_videos ) : $merged_videos ;
 					} else {
 						$gallery = $image_list;
-						$api_key = 'AIzaSyApK9-NJu45Ai2DTlsd81LFRL-5z_N06hc';
+						$api_key = get_option('youtube_api_key');
 						$playlist_id = get_post_meta( $post->ID,'playlist_id', true );
 
 						$api_url = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId='. $playlist_id . '&key=' . $api_key;
@@ -575,7 +576,7 @@ class Album_Station_widget extends Widget_Base {
 									'thumb' => "https://img.youtube.com/vi/".$id."/maxresdefault.jpg"
 								);
 							}
-							$gallery = (count($image_list) > 0) ? array_merge( $image_list, $youtube_playlist ) : $youtube_playlist;
+							$gallery = (count($image_list) > 0) ? array_merge( $youtube_playlist, $image_list ) : $youtube_playlist;
 						}
 
 					}
