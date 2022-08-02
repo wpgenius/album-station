@@ -90,6 +90,29 @@ function album_init() {
 
 add_action( 'init', 'album_init' );
 
+function manage_album_cols($columns) {
+
+	$inserted = array( 
+			'thumbnail' => 'album Photo',
+		 ); 
+
+  	return array_merge(
+	            array_slice($columns, 0, 2),
+	            $inserted,
+	            array_slice($columns, 2)
+	        );
+}
+add_filter( 'manage_album_posts_columns', 'manage_album_cols');
+
+function album_field_col( $column_name, $post_id ){
+
+	if( $column_name == 'thumbnail' ){
+		echo get_the_post_thumbnail( $post_id, 'thumbnail' );
+	}
+
+}
+add_action( 'manage_album_posts_custom_column', 'album_field_col', 10, 2);
+
 function image_meta_box(){
     
 	add_meta_box( 'image-gallery', __(  'Image Gallery'), 'image_post_meta_callback', 'album', 'advanced', 'high');
