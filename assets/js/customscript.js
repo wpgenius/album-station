@@ -89,5 +89,5 @@ jQuery(document).ready(function(){
 });
 
 jQuery( window ).load(function() {
-	jQuery(".button-group a:first-child").trigger('click');
+	jQuery(".button-group span:first-child").trigger('click');
 });	

@@ -50,13 +50,15 @@
     top: 0 !important;
     bottom: 0 !important;
   }
-a.filter_buttons:hover {
+.filter_buttons:hover,.image-wrapper {
     cursor: pointer;
 }
-
 .col-xs-12 {
     float: left;
     width: 100%;
+}
+.filter_buttons{
+    display: inline-block;
 }
 
 @media (min-width: 768px) {
