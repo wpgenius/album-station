@@ -24,6 +24,7 @@ define( 'WBC_DIR_PATH', plugin_dir_path( __FILE__ ) );
 require 'post-types/album.php';
 require 'includes/shortcode.php';
 require 'includes/elementor-widgets.php';
+require 'includes/admin-settings.php';
 
 
 function album_station_css(){
