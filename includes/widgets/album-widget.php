@@ -350,6 +350,14 @@ class Album_Station_widget extends Widget_Base {
 			]
 		);
 		
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'filter_typography',
+				'selector' => '.filter_buttons',
+			]
+		);
+		
 		$this->start_controls_tabs(
 			'style_tabs'
 		);
