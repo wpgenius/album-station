@@ -471,6 +471,7 @@ class Album_Station_widget extends Widget_Base {
 		));		
 		
 		if(( $settings["show_filters"] ==='yes' )){
+		wp_enqueue_script( 'isotope', WBC_DIR_URL . 'assets/js/isotope.js', array( 'jquery' ) );
 			echo '<div class="button-group filter-button-group">';
 					foreach( $terms_name as $my_term ){ 
 						$slug = $my_term->slug; 
