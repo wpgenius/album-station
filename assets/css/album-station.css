@@ -1,0 +1,79 @@
+.as_title{
+    margin-bottom: 10px;
+}
+.as_title label {
+    font-size: 16px;
+    font-weight: 500;
+}
+.selected_images{
+    padding: 30px 20px;
+    background: #f5f5f5;
+}
+.selected_images img{
+    padding-right: 10px;
+}
+.btn_upload{
+    margin-top: 10px;
+}
+
+.vimeo_video_id ,.as_container{
+    margin: 10px 0;
+}
+
+.album-station {
+    padding: 10px;
+}
+
+.album-station img{
+    transition-duration: 0.4s;
+}
+
+.album-station:hover img {
+    transform: scale(1.2);transition-duration: 0.4s;
+}
+
+.album-station .gallery {
+    overflow: hidden;
+}
+
+.gallery-item a {
+    overflow: hidden;
+}
+
+.lg-sub-html h4 {
+    color: #eee !important;
+}
+.hide_thumbnail_on_fullscreen .lg-fullscreen-on .lg-components{
+    display: none;
+}
+.hide_thumbnail_on_fullscreen .lg-fullscreen-on .lg-content {
+    top: 0 !important;
+    bottom: 0 !important;
+  }
+.filter_buttons:hover,.image-wrapper {
+    cursor: pointer;
+}
+.col-xs-12 {
+    float: left;
+    width: 100%;
+}
+.filter_buttons{
+    display: inline-block;
+}
+
+@media (min-width: 768px) {
+    .col-sm-6 {
+        float: left;
+        width: 50%;
+    }
+}
+@media (min-width: 992px) {
+    .col-md-4 {
+        float: left;
+        width: 33.33333333%;
+    }
+    .col-md-3 {
+        float: left;
+        width: 25%;
+    }
+}

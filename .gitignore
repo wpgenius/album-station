@@ -82,3 +82,9 @@ dw_php_codehinting.config
 *.mno
 *.xml
 *.lck
+
+#php unit testing
+phpcs.xml
+phpunit.xml
+*.tar.gz
+*.zip
