@@ -32,7 +32,7 @@ class AS_Elementor_Widgets {
 	public function widget_scripts() {
 
 		wp_enqueue_script( 'lightgallery-combined', WBC_DIR_URL . 'assets/js/lightgallery-combined.js', array( 'jquery' ) );
-		wp_enqueue_script( 'customscript', WBC_DIR_URL . 'assets/js/customscript.js', array( 'jquery' ) );
+		wp_enqueue_script( 'albumstation', WBC_DIR_URL . 'assets/js/albumstation.js', array( 'jquery' ) );
 	}
 
 	public function register_widgets() {

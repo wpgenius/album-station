@@ -40,7 +40,7 @@ function album_station_js() {
 	if ( ! did_action( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}
- 
- 	wp_enqueue_script( 'myuploadscript', WBC_DIR_URL . '/assets/js/customscript.js', array( 'jquery' ) );
+
+	wp_enqueue_script( 'admin-albumstation', WBC_DIR_URL . '/assets/js/admin-albumstation.js', array( 'jquery' ) );
 }
 add_action( 'admin_enqueue_scripts', 'album_station_js' );
