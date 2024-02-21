@@ -6,8 +6,8 @@
 function album_init() {
 	register_post_type(
 		'album',
-		[
-			'labels'                => [
+		array(
+			'labels'                => array(
 				'name'                  => __( 'Albums', 'album-station' ),
 				'singular_name'         => __( 'Album', 'album-station' ),
 				'all_items'             => __( 'All Albums', 'album-station' ),
@@ -33,12 +33,12 @@ function album_init() {
 				'not_found_in_trash'    => __( 'No Albums found in trash', 'album-station' ),
 				'parent_item_colon'     => __( 'Parent Album:', 'album-station' ),
 				'menu_name'             => __( 'Albums', 'album-station' ),
-			],
+			),
 			'public'                => true,
 			'hierarchical'          => false,
 			'show_ui'               => true,
 			'show_in_nav_menus'     => true,
-			'supports'              => [ 'title', 'editor', 'thumbnail' ],
+			'supports'              => array( 'title', 'editor', 'thumbnail' ),
 			'has_archive'           => true,
 			'rewrite'               => true,
 			'query_var'             => true,
@@ -47,10 +47,11 @@ function album_init() {
 			'show_in_rest'          => true,
 			'rest_base'             => 'album',
 			'rest_controller_class' => 'WP_REST_Posts_Controller',
-		]
+		)
 	);
 
-	$labels = array(																														'name'                       => _x( 'Product Categories', 'Product Categories', 'crezza' ),
+	$labels = array(
+		'name'                       => _x( 'Product Categories', 'Product Categories', 'crezza' ),
 		'singular_name'              => _x( 'Category', 'Album Category', 'album-station' ),
 		'menu_name'                  => __( 'Categories', 'album-station' ),
 		'all_items'                  => __( 'All Items', 'album-station' ),
@@ -60,71 +61,96 @@ function album_init() {
 		'add_new_item'               => __( 'Add New Album Category', 'album-station' ),
 		'edit_item'                  => __( 'Edit Category', 'album-station' ),
 		'update_item'                => __( 'Update Album Category', 'album-station' ),
-		'view_item'                  => __( 'View Category', 'album-station' ), 'separate_items_with_commas' => __( 'Separate items with commas', 'album-station' ),
+		'view_item'                  => __( 'View Category', 'album-station' ),
+		'separate_items_with_commas' => __( 'Separate items with commas', 'album-station' ),
 		'add_or_remove_items'        => __( 'Add or remove Album', 'album-station' ),
 		'choose_from_most_used'      => __( 'Choose from the most used', 'album-station' ),
 		'popular_items'              => __( 'Popular Album Categories', 'album-station' ),
 		'search_items'               => __( 'Search Album', 'album-station' ),
-		'not_found'                  => __( 'Not Found', 'album-station' ),		
-		'no_terms'                   => __( 'No items', 'album-station' ),		
-		'items_list'                 => __( 'Album list', 'album-station' ),		
-		'items_list_navigation'      => __( 'Album list navigation', 'album-station' ),	
+		'not_found'                  => __( 'Not Found', 'album-station' ),
+		'no_terms'                   => __( 'No items', 'album-station' ),
+		'items_list'                 => __( 'Album list', 'album-station' ),
+		'items_list_navigation'      => __( 'Album list navigation', 'album-station' ),
 	);
 
-    $args = array(		
-        'labels'                     => $labels,		
-        'hierarchical'               => true,		
-        'public'                     => false,		
-        'show_ui'                    => true,		
-        'show_admin_column'          => true,		
-        'show_in_nav_menus'          => true,				
-        'rewrite'					 => array(											
-            'slug'                       => 'catalogue',											
-            'with_front'                 => false,											
-            'hierarchical'               => true,										
-        ),	
-    );
-    register_taxonomy( 'album_category', array( 'album' ), $args );
+	$args = array(
+		'labels'            => $labels,
+		'hierarchical'      => true,
+		'public'            => false,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'show_in_nav_menus' => true,
+		'rewrite'           => array(
+			'slug'         => 'catalogue',
+			'with_front'   => false,
+			'hierarchical' => true,
+		),
+	);
+	register_taxonomy( 'album_category', array( 'album' ), $args );
 
 }
 
 add_action( 'init', 'album_init' );
 
-function manage_album_cols($columns) {
+/**
+ * Add a album photo column to album post type.
+ *
+ * @param [type] $columns
+ * @return array
+ */
+function manage_album_cols( $columns ) {
 
-	$inserted = array( 
-			'thumbnail' => 'album Photo',
-		 ); 
+	$inserted = array(
+		'thumbnail' => 'album Photo',
+	);
 
-  	return array_merge(
-	            array_slice($columns, 0, 2),
-	            $inserted,
-	            array_slice($columns, 2)
-	        );
+	return array_merge(
+		array_slice( $columns, 0, 2 ),
+		$inserted,
+		array_slice( $columns, 2 )
+	);
 }
-add_filter( 'manage_album_posts_columns', 'manage_album_cols');
+add_filter( 'manage_album_posts_columns', 'manage_album_cols' );
 
-function album_field_col( $column_name, $post_id ){
+/**
+ * show feature image of album post type in album photo.
+ *
+ * @param [type] $column_name
+ * @param [type] $post_id
+ * @return void
+ */
+function album_field_col( $column_name, $post_id ) {
 
-	if( $column_name == 'thumbnail' ){
+	if ( $column_name == 'thumbnail' ) {
 		echo get_the_post_thumbnail( $post_id, 'thumbnail' );
 	}
 
 }
-add_action( 'manage_album_posts_custom_column', 'album_field_col', 10, 2);
+add_action( 'manage_album_posts_custom_column', 'album_field_col', 10, 2 );
 
-function image_meta_box(){
-    
-	add_meta_box( 'image-gallery', __(  'Image Gallery'), 'image_post_meta_callback', 'album', 'advanced', 'high');
-}   
+/**
+ * Add metabox for image gallery.
+ *
+ * @return array
+ */
+function image_meta_box() {
+
+	add_meta_box( 'image-gallery', __( 'Image Gallery' ), 'image_post_meta_callback', 'album', 'advanced', 'high' );
+}
 add_action( 'add_meta_boxes', 'image_meta_box' );
 
-function image_post_meta_callback($post){
+/**
+ * Add post meta boxes to album post type
+ *
+ * @param [type] $post
+ * @return void
+ */
+function image_post_meta_callback( $post ) {
 
-	$value = get_post_meta($post->ID, 'image_post_meta_value', true); ?>
+	$value = get_post_meta( $post->ID, 'image_post_meta_value', true ); ?>
 
 	<table class="form-table as_metabox">
-		
+
 		<div class="myplugin-image-preview" id="disp_image_gallery">
 			<div class="as_title">
 				<label for="immage_id">Selected Images</label>
@@ -132,49 +158,60 @@ function image_post_meta_callback($post){
 				<input style="width:60%; padding:10px !important;" type="hidden" id="immage_id" name="immage_id" value="<?php echo $value; ?>" />
 			</div>
 			<div class="selected_images">
-				<?php 
-						$images_id = explode("," ,$value);
-						
-						foreach($images_id as $id){
-							echo '<img src="'.wp_get_attachment_image_url($id).'" height="100" >';
-						}
+				<?php
+						$images_id = explode( ',', $value );
+
+				foreach ( $images_id as $id ) {
+					echo '<img src="' . wp_get_attachment_image_url( $id ) . '" height="100" >';
+				}
 				?>
 			</div>
 		</div>
 		<div class="btn_upload">
 			<input type="submit" class="button" value="Upload Image" id="upload_img" name="update_gallery"/>
 		</div>
-	</table><?php
+	</table>
+	<?php
 }
 
-add_action( 'save_post', 'image_save_post_meta' );
+/**
+ * Save post data of image gallery
+ *
+ * @param [type] $post_id
+ * @return void
+ */
+function image_save_post_meta( $post_id ) {
 
-function image_save_post_meta( $post_id ){
+	if ( isset( $_POST['immage_id'] ) && $_POST['immage_id'] != '' ) {
+		$mydata = $_POST['immage_id'];
+		update_post_meta( $post_id, 'image_post_meta_value', $mydata );
 
-	if(isset($_POST['immage_id']) && $_POST['immage_id'] != ''){
-		$mydata =  $_POST['immage_id'];
-		update_post_meta($post_id, 'image_post_meta_value', $mydata);
-	
 	}
 }
+add_action( 'save_post', 'image_save_post_meta' );
 
-function video_meta_box(){
-    
-	add_meta_box( 'video-gallery', __(  'Video Gallery'), 'video_post_meta_callback', 'album', 'advanced', 'high');
-}   
+/**
+ * Add meta box for Video gallery
+ *
+ * @return void
+ */
+function video_meta_box() {
+
+	add_meta_box( 'video-gallery', __( 'Video Gallery' ), 'video_post_meta_callback', 'album', 'advanced', 'high' );
+}
 add_action( 'add_meta_boxes', 'video_meta_box' );
 
-function video_post_meta_callback($post){
-	 ?>
+function video_post_meta_callback( $post ) {
+	?>
 	<div class="video-choice as_container">
 		<div class="as_title">
 			<label>Select Video Choice</label>
 		</div>
 		<div>
-			<input type="radio" id="single" name="video_choice" class="video_choice" value="single" <?php checked( 'single',get_post_meta( $post->ID,'video_choice', true ) ? get_post_meta( $post->ID,'video_choice', true ) : 'single',true ) ?>>
+			<input type="radio" id="single" name="video_choice" class="video_choice" value="single" <?php checked( 'single', get_post_meta( $post->ID, 'video_choice', true ) ? get_post_meta( $post->ID, 'video_choice', true ) : 'single', true ); ?>>
 			<label for="single">Single</label>
 
-			<input type="radio" id="playlist" name="video_choice" class="video_choice" value="playlist" <?php checked( 'playlist',get_post_meta( $post->ID,'video_choice', true ),true ) ?>>
+			<input type="radio" id="playlist" name="video_choice" class="video_choice" value="playlist" <?php checked( 'playlist', get_post_meta( $post->ID, 'video_choice', true ), true ); ?>>
 			<label for="playlist">Playlist</label>
 		</div>
 	</div>
@@ -185,61 +222,71 @@ function video_post_meta_callback($post){
 				<label for="youtube_video_id">Enter Youtube Video ID's</label>
 			</div>
 			<div>
-				<input style="width:60%; padding:10px !important;" type="text" id="youtube_video_id" name="youtube_video_id" value="<?php echo get_post_meta($post->ID, 'youtube_video_post_meta_value', true); ?>" />
+				<input style="width:60%; padding:10px !important;" type="text" id="youtube_video_id" name="youtube_video_id" value="<?php echo get_post_meta( $post->ID, 'youtube_video_post_meta_value', true ); ?>" />
 			</div>
 
 			<div class="as_title vimeo_video_id">
 				<label for="vimeo_video_id">Enter Vimeo Video ID's</label>
 			</div>
 			<div>
-				<input style="width:60%; padding:10px !important;" type="text" id="vimeo_video_id" name="vimeo_video_id" value="<?php echo get_post_meta($post->ID, 'vimeo_video_post_meta_value', true); ?>" />
+				<input style="width:60%; padding:10px !important;" type="text" id="vimeo_video_id" name="vimeo_video_id" value="<?php echo get_post_meta( $post->ID, 'vimeo_video_post_meta_value', true ); ?>" />
 			</div>
-			
+
 		</div>
 		<div class="as_container video_playlist">
 			<div class="as_title">
 				<label for="youtube_playlist">Enter Playlist ID's</label>
 			</div>
 			<div>
-				<input style="width:60%; padding:10px !important;" type="text" id="playlist_id" name="playlist_id" value="<?php echo (get_post_meta( $post->ID,'playlist_id', true ))? get_post_meta( $post->ID,'playlist_id', true ):''; ?>" />
+				<input style="width:60%; padding:10px !important;" type="text" id="playlist_id" name="playlist_id" value="<?php echo ( get_post_meta( $post->ID, 'playlist_id', true ) ) ? get_post_meta( $post->ID, 'playlist_id', true ) : ''; ?>" />
 			</div>
 		</div>
 		<div class="as_container">
-			<label for="video_popup">Check for video popup:</label> 
-			<?php $checkboxMeta = get_post_meta( $post->ID );?>
-			<input type="checkbox" name="video_popup" id="video_popup" value="yes" <?php if ( isset ( $checkboxMeta['video_popup'] ) ) checked( $checkboxMeta['video_popup'][0], 'yes' ); ?> />
+			<label for="video_popup">Check for video popup:</label>
+			<?php $checkboxMeta = get_post_meta( $post->ID ); ?>
+			<input type="checkbox" name="video_popup" id="video_popup" value="yes"
+			<?php
+			if ( isset( $checkboxMeta['video_popup'] ) ) {
+				checked( $checkboxMeta['video_popup'][0], 'yes' );}
+			?>
+			 />
 		</div>
 	</div>
-<?php		
+	<?php
 }
 
-add_action( 'save_post', 'video_save_post_meta' );
+/**
+ * Save video post meta
+ *
+ * @param [type] $post_id
+ * @return string
+ */
+function video_save_post_meta( $post_id ) {
 
-function video_save_post_meta( $post_id ){
-
-	if(isset($_POST['youtube_video_id']) && $_POST['youtube_video_id'] != ''){
-		$mydata =  $_POST['youtube_video_id'];
-		update_post_meta($post_id, 'youtube_video_post_meta_value', $mydata);
+	if ( isset( $_POST['youtube_video_id'] ) && $_POST['youtube_video_id'] != '' ) {
+		$mydata = $_POST['youtube_video_id'];
+		update_post_meta( $post_id, 'youtube_video_post_meta_value', $mydata );
 	}
 
-	if(isset($_POST['vimeo_video_id']) && $_POST['vimeo_video_id'] != ''){
-		$mydata =  $_POST['vimeo_video_id'];
-		update_post_meta($post_id, 'vimeo_video_post_meta_value', $mydata);
+	if ( isset( $_POST['vimeo_video_id'] ) && $_POST['vimeo_video_id'] != '' ) {
+		$mydata = $_POST['vimeo_video_id'];
+		update_post_meta( $post_id, 'vimeo_video_post_meta_value', $mydata );
 	}
 
-	if(isset($_POST['playlist_id']) && $_POST['playlist_id'] != ''){
-		$mydata =  $_POST['playlist_id'];
-		update_post_meta($post_id, 'playlist_id', $mydata);
+	if ( isset( $_POST['playlist_id'] ) && $_POST['playlist_id'] != '' ) {
+		$mydata = $_POST['playlist_id'];
+		update_post_meta( $post_id, 'playlist_id', $mydata );
 	}
 
-	if( isset( $_POST[ 'video_popup' ] ) ) {
+	if ( isset( $_POST['video_popup'] ) ) {
 		update_post_meta( $post_id, 'video_popup', 'yes' );
-		} else {
+	} else {
 		update_post_meta( $post_id, 'video_popup', 'no' );
-	}  
-	if( isset( $_POST[ 'video_choice' ] ) ) {
-		$mydata =  $_POST['video_choice'];
+	}
+	if ( isset( $_POST['video_choice'] ) ) {
+		$mydata = $_POST['video_choice'];
 		update_post_meta( $post_id, 'video_choice', $mydata );
 	}
 
 }
+add_action( 'save_post', 'video_save_post_meta' );
