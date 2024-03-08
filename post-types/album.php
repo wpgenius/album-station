@@ -189,10 +189,21 @@ add_action( 'add_meta_boxes', 'image_meta_box' );
  */
 function image_post_meta_callback( $post ) {
 
-	$value = get_post_meta( $post->ID, 'image_post_meta_value', true ); ?>
+	$value = get_post_meta( $post->ID, 'image_post_meta_value', true );
+	$has_single_page = get_post_meta( $post->ID, 'project_has_single_page', true ) ?  : 'no' ;
+
+	?>
 
 	<table class="form-table as_metabox">
-
+		<div style="margin-bottom: 20px;">
+			<div class="as_title">
+				<label for="single_page">Project type setting (Single page / Popup)</label>
+			</div>
+			<input type="radio" name="single_page" id="single_page_yes" value="yes" <?php checked( $has_single_page,'yes', true ) ?> >
+			<label for="single_page_yes">Single page</label>
+			<input type="radio" name="single_page" id="single_page_no" value="no" <?php checked(  $has_single_page,'no', true ) ?> style="margin-right: 10px;">
+			<label for="single_page_no">Popup</label>
+		</div>
 		<div class="myplugin-image-preview" id="disp_image_gallery">
 			<div class="as_title">
 				<label for="immage_id">Selected Images</label>
@@ -229,6 +240,11 @@ function image_save_post_meta( $post_id ) {
 		update_post_meta( $post_id, 'image_post_meta_value', $mydata );
 
 	}
+
+	if ( isset( $_POST['single_page'] ) && $_POST['single_page'] != '' ) {
+		$mydata = $_POST['single_page'];
+		update_post_meta( $post_id, 'project_has_single_page', $mydata );
+	}
 }
 add_action( 'save_post', 'image_save_post_meta' );
 
@@ -238,7 +254,6 @@ add_action( 'save_post', 'image_save_post_meta' );
  * @return void
  */
 function video_meta_box() {
-
 	add_meta_box( 'video-gallery', __( 'Video Gallery' ), 'video_post_meta_callback', 'album', 'advanced', 'high' );
 }
 add_action( 'add_meta_boxes', 'video_meta_box' );
