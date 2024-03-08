@@ -15,7 +15,7 @@
 // Your code starts here.
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+	exit;
 }
 
 define( 'WBC_DIR_URL', plugin_dir_url( __FILE__ ) );
@@ -27,7 +27,7 @@ require 'includes/elementor-widgets.php';
 require 'includes/admin-settings.php';
 
 
-function album_station_css(){
+function album_station_css() {
 	wp_enqueue_style( 'album-style', WBC_DIR_URL . '/assets/css/album-station.css' );
 
 }
@@ -36,7 +36,7 @@ add_action( 'admin_menu', 'album_station_css' );
 function album_station_js() {
 
 	// I recommend to add additional conditions just to not to load the scipts on each page
-	
+
 	if ( ! did_action( 'wp_enqueue_media' ) ) {
 		wp_enqueue_media();
 	}
