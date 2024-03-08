@@ -18,7 +18,7 @@ class Album_station_settings {
 	private $prefix		= 'youtube_';
 	private $opt_grp	= 'album_station_api_';
 	private $page		= 'album_station_settings';
-	
+
 	public static function init(){
 
 	    if ( is_null( self::$instance ) )
@@ -46,24 +46,24 @@ class Album_station_settings {
 	}
 
 	function album_station_register_settings() {
-		
+
 		//Register settings
 	    register_setting( $this->opt_grp, $this->prefix.'api_key', array( 'type' => 'string', 'default' => '' ) );
 
 		//Register sections
 		add_settings_section( $this->prefix.'api_section',		__('Youtube API','album-station'),			array( $this, 'as_api_section_title' ),	$this->page );
-		
-		//Add settings to section- braincert_api_section 
+
+		//Add settings to section- braincert_api_section
 		add_settings_field( $this->prefix.'api_key',	__('Youtube API Key :','album-station'), array( $this, 'as_api_key_field' ), 	$this->page, $this->prefix.'api_section' );
-		
+
 	}
-	
+
 	function album_settings_callback(){
 		?>
         <div class="wrap">
-    	
+
             <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-            
+
             <form method="POST" action="options.php">
 				<?php
 					// output security fields for the registered setting "wporg"
@@ -77,24 +77,24 @@ class Album_station_settings {
             </form>
         </div>
         <?php
-		
+
 	}
-	
+
 	function as_api_section_title(){
 		?>
 		<p><?php _e( 'Get API details from https://developers.google.com/ & put below.','album-station'); ?></p>
-        <?php 
+        <?php
 	}
-	
-	
-	
+
+
+
 	function as_api_key_field(){
 		?>
        	<input type='text' name='<?php echo $this->prefix ?>api_key' id='<?php echo $this->prefix ?>api_key' value='<?php echo get_option( $this->prefix.'api_key' );?>' style="width: 300px;">
         <?php
 	}
-	
-	
+
+
 
 }
 Album_station_settings::init();
