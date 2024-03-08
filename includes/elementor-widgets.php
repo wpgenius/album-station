@@ -36,7 +36,7 @@ class AS_Elementor_Widgets {
 	}
 
 	public function register_widgets() {
-		
+
 		require_once( __DIR__.'/widgets/album-widget.php');
 		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new \Elementor\Album_Station_widget() );
 	}
