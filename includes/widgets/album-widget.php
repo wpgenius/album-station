@@ -40,6 +40,21 @@ class Album_Station_widget extends Widget_Base {
 			)
 		);
 
+		$terms      = get_terms( 'type' );
+		$term_array = array();
+		foreach ( $terms as $term ) {
+			$term_array[ $term->slug ] = $term->name;
+		}
+		$this->add_control(
+			'select_texanomy',
+			array(
+				'type'    => \Elementor\Controls_Manager::SELECT,
+				'label'   => esc_html__( 'Slide to Show', 'portfolio' ),
+				'options' => $term_array,
+				'default' => '',
+			)
+		);
+
 		$this->add_control(
 			'gallery_options',
 			array(
@@ -462,6 +477,13 @@ class Album_Station_widget extends Widget_Base {
 			array(
 				'post_type'   => 'album',
 				'numberposts' => 1000,
+				'tax_query'   => array(
+					array(
+						'taxonomy' => 'type',
+						'field'    => 'slug',
+						'terms'    => $settings['select_texanomy'],
+					),
+				),
 			)
 		);
 		$terms_name = get_terms(
