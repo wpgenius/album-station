@@ -26,4 +26,26 @@ jQuery( window ).load(function() {
 	if (jQuery(".album-grid").length > 0) {
 		jQuery(".button-group span:first-child").trigger('click');
 	}
+	var list= []
+	jQuery('.filter_buttons').each(function(n) {
+		list[n] = jQuery(this).attr('id')
+	})
+
+	var classList = []
+	jQuery('.album-station').each(function(n) {
+		classList[n] = jQuery(this).data('sort')
+	})
+
+	function removeDuplicates(arr) {
+		return arr.filter((item,
+			index) => arr.indexOf(item) === index);
+	}
+	classList =  removeDuplicates(classList);
+	classList.push('all')
+
+	var array3 = list.filter(function(obj) { return classList.indexOf(obj) == -1; });
+	for (let i = 0; i < array3.length; ++i) {
+		jQuery('#'+ array3[i]).hide();
+	}
+
 });
