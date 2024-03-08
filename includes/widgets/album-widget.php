@@ -496,9 +496,10 @@ class Album_Station_widget extends Widget_Base {
 		if ( ( $settings['show_filters'] === 'yes' ) ) {
 			wp_enqueue_script( 'isotope', WBC_DIR_URL . 'assets/js/isotope.js', array( 'jquery' ) );
 			echo '<div class="button-group filter-button-group">';
+				echo '<span data-filter=".all" class="filter_buttons" id="all">All</span>';
 			foreach ( $terms_name as $my_term ) {
 				$slug = $my_term->slug;
-				echo '<span data-filter=".' . $slug . '" class="filter_buttons">' . $my_term->name . '</span>';
+				echo '<span data-filter=".' . $slug . '" class="filter_buttons" id="'.$slug.'">' . $my_term->name . '</span>';
 			}
 			echo '</div>';
 		}
@@ -514,117 +515,147 @@ class Album_Station_widget extends Widget_Base {
 
 				$img_arr    = explode( ',', $img_ids );
 				$image_list = array();
+				$has_single_page = get_post_meta( $post_id, 'project_has_single_page', true );
+				if( $has_single_page != 'yes' ){
+					$image_list[] = array(
 
-				if ( $img_ids ) {
+						'src'     => get_the_post_thumbnail_url( $post_id, 'full' ),
+						'thumb'   => get_the_post_thumbnail_url( $post_id, 'full' ),
 
-					foreach ( $img_arr as $img_id ) {
+					);
 
-						$img_post = get_post( $img_id );
+					if ( $img_ids ) {
 
-						$img_title = $img_post->post_title;
-						$img_dec   = $img_post->post_content;
+						foreach ( $img_arr as $img_id ) {
 
-						$subhtml = '';
-						ob_start();
-						?>
-							<div class="lightGallery-captions">
-								<h4>
-								<?php
-								if ( $img_title ) {
-									echo $img_title; }
-								?>
-								</h4>
-							</div>
+							$img_post = get_post( $img_id );
 
-						<?php
-						$subhtml = ob_get_contents();
-							ob_end_clean();
-							$image_list[] = array(
+							$img_title = $img_post->post_title;
+							$img_dec   = $img_post->post_content;
 
-								'src'     => wp_get_attachment_image_url( $img_id, 'full' ),
-								'thumb'   => wp_get_attachment_image_url( $img_id ),
-								'subHtml' => $subhtml,
+							$subhtml = '';
+							ob_start();
+							?>
+								<div class="lightGallery-captions">
+									<h4>
+									<?php
+									if ( $img_title ) {
+										echo $img_title; }
+									?>
+									</h4>
+								</div>
 
-							);
+							<?php
+							$subhtml = ob_get_contents();
+								ob_end_clean();
+								$image_list[] = array(
+
+									'src'     => wp_get_attachment_image_url( $img_id, 'full' ),
+									'thumb'   => wp_get_attachment_image_url( $img_id ),
+									'subHtml' => $subhtml,
+
+								);
+
+						}
 
 					}
+
 					$gallery = $image_list;
-				}
 
-				if ( ( $settings['is_video'] === 'yes' ) ) {
+					if ( ( $settings['is_video'] === 'yes' ) ) {
 
-					if ( get_post_meta( $post->ID, 'video_choice', true ) == 'single' ) {
+						if ( get_post_meta( $post->ID, 'video_choice', true ) == 'single' ) {
 
-						$youtube_video_list = array();
+							$youtube_video_list = array();
 
-						if ( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ) ) {
+							if ( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ) ) {
 
-							parse_str( parse_url( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ), PHP_URL_QUERY ), $id );
-							$youtube_video_id = $id['v'];
+								parse_str( parse_url( get_post_meta( $post_id, 'youtube_video_post_meta_value', true ), PHP_URL_QUERY ), $id );
+								$youtube_video_id = $id['v'];
 
-							$youtube_video_list[] = array(
-								'src'    => '//www.youtube.com/watch?v=' . $youtube_video_id,
-								'poster' => 'https://img.youtube.com/vi/' . $youtube_video_id . '/maxresdefault.jpg',
-								'thumb'  => 'https://img.youtube.com/vi/' . $youtube_video_id . '/maxresdefault.jpg',
-							);
-						}
-
-						$vimeo_video_list = array();
-
-						if ( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ) ) {
-
-							$url            = explode( '/', parse_url( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ), PHP_URL_PATH ) );
-							$vimeo_video_id = (int) $url[ count( $url ) - 1 ];
-
-							$hash = unserialize( file_get_contents( "http://vimeo.com/api/v2/video/$vimeo_video_id.php" ) );
-							$img  = $hash[0]['thumbnail_medium'];
-
-							$vimeo_video_list[] = array(
-								'src'    => '//vimeo.com/' . $vimeo_video_id,
-								'poster' => $img,
-								'thumb'  => $img,
-							);
-						}
-
-						$merged_videos = array_merge( $youtube_video_list, $vimeo_video_list );
-
-						$gallery = ( count( $image_list ) > 0 ) ? array_merge( $image_list, $merged_videos ) : $merged_videos;
-					} else {
-						$gallery     = $image_list;
-						$api_key     = get_option( 'youtube_api_key' );
-						$playlist_id = get_post_meta( $post->ID, 'playlist_id', true );
-
-						$api_url       = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=' . $playlist_id . '&key=' . $api_key;
-						$playlist_data = json_decode( file_get_contents( $api_url ), true );
-						if ( $playlist_data ) {
-							$youtube_playlist = array();
-							foreach ( $playlist_data['items'] as $item ) {
-								$id                 = $item['snippet']['resourceId']['videoId'];
-								$youtube_playlist[] = array(
-									'src'    => '//www.youtube.com/watch?v=' . $id,
-									'poster' => 'https://img.youtube.com/vi/' . $id . '/maxresdefault.jpg',
-									'thumb'  => 'https://img.youtube.com/vi/' . $id . '/maxresdefault.jpg',
+								$youtube_video_list[] = array(
+									'src'    => '//www.youtube.com/watch?v=' . $youtube_video_id,
+									'poster' => 'https://img.youtube.com/vi/' . $youtube_video_id . '/maxresdefault.jpg',
+									'thumb'  => 'https://img.youtube.com/vi/' . $youtube_video_id . '/maxresdefault.jpg',
 								);
 							}
-							$gallery = ( count( $image_list ) > 0 ) ? array_merge( $youtube_playlist, $image_list ) : $youtube_playlist;
+
+							$vimeo_video_list = array();
+
+							if ( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ) ) {
+
+								$url            = explode( '/', parse_url( get_post_meta( $post_id, 'vimeo_video_post_meta_value', true ), PHP_URL_PATH ) );
+								$vimeo_video_id = (int) $url[ count( $url ) - 1 ];
+
+								$hash = unserialize( file_get_contents( "http://vimeo.com/api/v2/video/$vimeo_video_id.php" ) );
+								$img  = $hash[0]['thumbnail_medium'];
+
+								$vimeo_video_list[] = array(
+									'src'    => '//vimeo.com/' . $vimeo_video_id,
+									'poster' => $img,
+									'thumb'  => $img,
+								);
+							}
+
+							$merged_videos = array_merge( $youtube_video_list, $vimeo_video_list );
+
+							$gallery = ( count( $image_list ) > 0 ) ? array_merge( $image_list, $merged_videos ) : $merged_videos;
+						} else {
+							$gallery     = $image_list;
+							$api_key     = get_option( 'youtube_api_key' );
+							$playlist_id = get_post_meta( $post->ID, 'playlist_id', true );
+
+							$api_url       = 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=' . $playlist_id . '&key=' . $api_key;
+							$playlist_data = json_decode( file_get_contents( $api_url ), true );
+							if ( $playlist_data ) {
+								$youtube_playlist = array();
+								foreach ( $playlist_data['items'] as $item ) {
+									$id                 = $item['snippet']['resourceId']['videoId'];
+									$youtube_playlist[] = array(
+										'src'    => '//www.youtube.com/watch?v=' . $id,
+										'poster' => 'https://img.youtube.com/vi/' . $id . '/maxresdefault.jpg',
+										'thumb'  => 'https://img.youtube.com/vi/' . $id . '/maxresdefault.jpg',
+									);
+								}
+								$gallery = ( count( $image_list ) > 0 ) ? array_merge( $youtube_playlist, $image_list ) : $youtube_playlist;
+							}
 						}
 					}
 				}
 
 				$grid_layout = ( $settings['grid_layout'] == '3' ) ? 'col-md-4' : 'col-md-3';
 				$term_list   = wp_get_post_terms( $post->ID, 'album_category', array( 'fields' => 'slugs' ) );
-					echo '<div class="album-station col-xs-12 col-sm-6 ' . $grid_layout . ' ' . implode( ' ', $term_list ) . '">';
+
+
+					echo '<div class="album-station col-xs-12 col-sm-6 ' . $grid_layout . ' all ' . implode( ' ', $term_list ) . '" data-sort="'. implode( ' ', $term_list ) .'">';
 						echo '<div class="image-wrapper">';
 							echo '<div class="gallery">';
-							echo '<a id="album-' . $post_id . '"  class="gallery-item" data-src=\'' . json_encode( $gallery ) . '\'>';
-								echo '<img src="' . $thumbnail . '" />';
-							echo '</a>';
+							if( !empty($gallery) ){
+								echo '<a id="album-' . $post_id . '"  class="gallery-item" data-src=\'' . json_encode( $gallery ) . '\'>';
+									echo '<img src="' . $thumbnail . '" />';
+								echo '</a>';
+							}else{
+								echo '<a id="album-' . $post_id . '"  class="gallery-item single_page" href="'.get_permalink($post_id).'">';
+									echo '<img src="' . $thumbnail . '" />';
+								echo '</a>';
+							}
 							echo '</div>';
 						echo '</div>';
 						echo "<div class='album_title' style='text-align:" . esc_attr( $settings['alignment_text'] ) . "'>";
-							echo '<' . $settings['heading_type'] . '>' . get_the_title() . '</' . $settings['heading_type'] . '>';
+						if( !empty($gallery) ){
+							echo '<a id="album-' . $post_id . '"  class="gallery-item" data-src=\'' . json_encode( $gallery ) . '\'>';
+								echo '<' . $settings['heading_type'] . '>' . get_the_title() . '</' . $settings['heading_type'] . '>';;
+							echo '</a>';
+						}else{
+							echo '<a href="'.get_permalink($post_id).'">';
+								echo '<' . $settings['heading_type'] . '>' . get_the_title() . '</' . $settings['heading_type'] . '>';;
+							echo '</a>';
+						}
+
 						echo '</div>';
 					echo '</div>';
+
+					$gallery=array();
 
 			}
 			wp_reset_postdata();
@@ -645,7 +676,7 @@ class Album_Station_widget extends Widget_Base {
 
 		?>
 		<script type="text/javascript">
-			jQuery('.gallery-item').click(function(){
+			jQuery('.gallery-item:not(.single_page)').click(function(){
 				var myarr = jQuery(this).data('src');
 
 				const $dynamicGallery = document.getElementById( jQuery(this).attr('id') );
