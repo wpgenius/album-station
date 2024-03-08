@@ -236,7 +236,13 @@ function image_post_meta_callback( $post ) {
 function image_save_post_meta( $post_id ) {
 
 	if ( isset( $_POST['immage_id'] ) && $_POST['immage_id'] != '' ) {
-		$mydata = $_POST['immage_id'];
+
+		$images_id = explode( ',', $_POST['immage_id'] );
+
+		$mydata = array_filter( $images_id, fn($value) => !is_null($value) && $value !== '' );
+
+		$mydata = implode( ',', $mydata );
+
 		update_post_meta( $post_id, 'image_post_meta_value', $mydata );
 
 	}
