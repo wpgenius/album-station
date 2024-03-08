@@ -256,7 +256,7 @@ add_action( 'save_post', 'image_save_post_meta' );
 function video_meta_box() {
 	add_meta_box( 'video-gallery', __( 'Video Gallery' ), 'video_post_meta_callback', 'album', 'advanced', 'high' );
 }
-add_action( 'add_meta_boxes', 'video_meta_box' );
+// add_action( 'add_meta_boxes', 'video_meta_box' );
 
 function video_post_meta_callback( $post ) {
 	?>

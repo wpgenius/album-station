@@ -28,8 +28,8 @@ class Album_station_settings {
 
 	private function __construct(){
 
-		add_action( 'admin_menu', array($this,'album_station_settings_menu'), 11);
-		add_action( 'admin_init', array($this,'album_station_register_settings'),10);
+		// add_action( 'admin_menu', array($this,'album_station_settings_menu'), 11);
+		// add_action( 'admin_init', array($this,'album_station_register_settings'),10);
 
 	} // END public function __construct
 
