@@ -92,6 +92,44 @@ function album_init() {
 	);
 	register_taxonomy( 'album_category', array( 'album' ), $args );
 
+	$labels = array(
+		'name'                       => _x( 'Construction types', 'Product Categories', 'crezza' ),
+		'singular_name'              => _x( 'Type', 'Type', 'album-station' ),
+		'menu_name'                  => __( 'Construction types', 'album-station' ),
+		'all_items'                  => __( 'All Items', 'album-station' ),
+		'parent_item'                => __( 'Parent Item', 'album-station' ),
+		'parent_item_colon'          => __( 'Parent Item:', 'album-station' ),
+		'new_item_name'              => __( 'New construction type', 'album-station' ),
+		'add_new_item'               => __( 'Add New construction type', 'album-station' ),
+		'edit_item'                  => __( 'Edit type', 'album-station' ),
+		'update_item'                => __( 'Update construction type', 'album-station' ),
+		'view_item'                  => __( 'View type', 'album-station' ),
+		'separate_items_with_commas' => __( 'Separate items with commas', 'album-station' ),
+		'add_or_remove_items'        => __( 'Add or remove construction type', 'album-station' ),
+		'choose_from_most_used'      => __( 'Choose from the most used', 'album-station' ),
+		'popular_items'              => __( 'Popular construction Categories', 'album-station' ),
+		'search_items'               => __( 'Search construction', 'album-station' ),
+		'not_found'                  => __( 'Not Found', 'album-station' ),
+		'no_terms'                   => __( 'No items', 'album-station' ),
+		'items_list'                 => __( 'construction list', 'album-station' ),
+		'items_list_navigation'      => __( 'construction list navigation', 'album-station' ),
+	);
+
+	$args = array(
+		'labels'            => $labels,
+		'hierarchical'      => true,
+		'public'            => false,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'show_in_nav_menus' => true,
+		'rewrite'           => array(
+			'slug'         => 'type',
+			'with_front'   => false,
+			'hierarchical' => true,
+		),
+	);
+	register_taxonomy( 'type', array( 'album' ), $args );
+
 }
 
 add_action( 'init', 'album_init' );
