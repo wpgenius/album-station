@@ -44,3 +44,8 @@ function album_station_js() {
 	wp_enqueue_script( 'admin-albumstation', WBC_DIR_URL . '/assets/js/admin-albumstation.js', array( 'jquery' ) );
 }
 add_action( 'admin_enqueue_scripts', 'album_station_js' );
+
+add_action( 'after_setup_theme', 'wpdocs_theme_setup' );
+function wpdocs_theme_setup() {
+	add_image_size( 'album-size', 280, 185, true );
+}
