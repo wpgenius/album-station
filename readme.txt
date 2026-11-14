@@ -1,97 +1,144 @@
-=== Album Station ===
+=== StackFolio – Photo & Video Album Gallery ===
 Contributors: mkrndmane, wpgenius
-Donate link: https://wpgenius.in
-Tags: portfolio, gallery, album
-Requires at least: 5.0
-Tested up to: 6.0
-Requires PHP: 7.0
-Stable tag: 0.1.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Tags: gallery, album, portfolio, lightbox, video gallery
+Requires at least: 6.3
+Tested up to: 7.1
+Requires PHP: 7.4
+Stable tag: 1.0.0
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Manage portfolio based on album concept using LightGallery.js.
+Stunning photo and video albums. One cover image opens the full album in a popup, with a filterable grid for Elementor and Gutenberg.
 
 == Description ==
 
-Create beautiful portfolio using mixed content.
+**StackFolio** shows your work as a grid of album covers. Click a cover and the whole album opens in a lightbox, with photos and videos side by side.
 
-A few notes about the sections above:
+It suits photographers, studios, agencies, event organisers, schools and anyone who has more pictures than fit on one page.
 
-*   Photos
-*   Videos
-*   Video from youtube or vimeo
+= How it works =
 
-    Categories album using taxonomy.
+1. Create an album under **StackFolio → Add New Album**.
+2. Set a featured image as the album cover.
+3. Add photos and videos from the Media Library, and paste YouTube or Vimeo links.
+4. Show your albums with the **StackFolio Albums** block, the Elementor widget or the `[stackfolio]` shortcode.
+
+= Features =
+
+* **Albums, not single images.** Each album is a stack of photos and videos behind one cover.
+* **Photos and videos together.** Media Library images and MP4/WebM videos, YouTube videos, YouTube playlists and Vimeo videos.
+* **Lightbox** powered by lightGallery, with thumbnails, zoom, fullscreen, slideshow and captions.
+* **Category filters** with smooth Isotope animations. Only categories that have albums in the grid are shown.
+* **Gutenberg block** with live preview.
+* **Elementor widget** with full style controls for cards, titles and filter buttons.
+* **Shortcode** for any other page builder or theme.
+* **Responsive columns** for desktop, tablet and mobile.
+* **Drag-and-drop ordering** of photos and videos inside an album.
+* **Accessible:** keyboard-friendly cards and filter buttons.
+* **Lightweight:** scripts load only on pages that show albums.
+* **Translation ready.**
+
+= Shortcode =
+
+`[stackfolio]`
+
+Options:
+
+* `category` – category slugs or IDs, comma separated
+* `ids` – album IDs, comma separated
+* `number` – how many albums (default: all)
+* `orderby` – `date`, `title`, `menu_order`, `modified` or `rand`
+* `order` – `DESC` or `ASC`
+* `columns`, `columns_tablet`, `columns_mobile` – 1 to 6 (default 3 / 2 / 1)
+* `gap` – spacing in pixels (default 20)
+* `filters` – `yes` to show category filters
+* `all`, `all_label` – show and label the "All" filter button
+* `title`, `title_tag`, `title_align` – album titles
+* `count` – `yes` to show "12 photos · 2 videos" on covers
+* `videos`, `captions`, `thumbnails`, `zoom`, `fullscreen`, `slideshow`, `download` – lightbox features (`yes` / `no`)
+* `autoplay` – `yes` to start the slideshow automatically
+* `hover` – `zoom` or `none`
+
+Example: `[stackfolio category="weddings,events" columns="4" filters="yes" count="yes"]`
+
+= Coming from Album Station? =
+
+StackFolio is the new name of Album Station. When you activate StackFolio it moves your albums, categories, videos and YouTube API key over automatically. Pages built with the old Elementor widget or the `[feature_album]` shortcode keep working. Once you see the notice, deactivate and delete Album Station.
+
+== External services ==
+
+StackFolio connects to these services only when an album contains the matching video links:
+
+* **YouTube** – Videos play in an embedded YouTube player and thumbnails load from `i.ytimg.com` when a visitor opens an album. For YouTube playlists, your site calls the YouTube Data API (`googleapis.com`) with your API key and the playlist ID to list the videos; results are cached for 12 hours. [YouTube Terms of Service](https://www.youtube.com/t/terms), [Google Privacy Policy](https://policies.google.com/privacy).
+* **Vimeo** – Your site calls Vimeo's oEmbed endpoint (`vimeo.com/api/oembed.json`) with the video URL to get its title and thumbnail; results are cached for 12 hours. Videos play in an embedded Vimeo player when a visitor opens an album. [Vimeo Terms of Service](https://vimeo.com/terms), [Vimeo Privacy Policy](https://vimeo.com/privacy).
+
+No data about your visitors is sent by the plugin itself. Embedded players are loaded by the visitor's browser only after they open an album.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload `plugin-name.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Use shortcode [album_station]
+1. Install StackFolio from **Plugins → Add New**, or upload the `stackfolio` folder to `/wp-content/plugins/`.
+2. Activate the plugin.
+3. Go to **StackFolio → Add New Album** and create your first album.
+4. Add the **StackFolio Albums** block to a page, use the Elementor widget, or paste `[stackfolio]`.
 
 == Frequently Asked Questions ==
 
-= Can I categories albums? =
+= Which videos can I add? =
 
-Yes.
+Videos uploaded to the Media Library (MP4 or WebM), YouTube videos, YouTube playlists and Vimeo videos. Paste one link per line in the **Video links** box of an album.
 
+= Do I need a YouTube API key? =
+
+Only for YouTube playlists. Single YouTube and Vimeo videos work without a key. Add the key under **StackFolio → Settings**.
+
+= Can I put videos before the photos? =
+
+Yes. Each album has a **Show video links** option: before or after the photos. Media Library videos follow the order you drag them into.
+
+= How do I change the order of albums? =
+
+Set the **Order** field in the album's **Page Attributes** box and choose "Custom order" in the block or widget, or use `orderby="menu_order" order="ASC"` in the shortcode.
+
+= Where does the album cover come from? =
+
+From the album's featured image. If there is none, the first photo in the album is used.
+
+= Does it work with my theme? =
+
+Yes. StackFolio uses its own small stylesheet and works with any theme. Colours can be changed in the Elementor widget, or with CSS custom properties such as `--stackfolio-accent`.
+
+= Are the albums public pages? =
+
+No. Albums are shown only through the block, widget or shortcode. Developers can change this with the `stackfolio_post_type_args` filter.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. Album grid with category filters.
+2. An album open in the lightbox, with thumbnails.
+3. Editing an album: drag-and-drop photos and videos, and video links.
+4. The StackFolio Albums block settings.
+5. The Elementor widget.
+
+== Third-party libraries ==
+
+* [lightGallery](https://github.com/sachinchoolur/lightGallery) 2.9.0 – GPLv3
+* [Isotope](https://github.com/metafizzy/isotope) 3.0.6 – GPLv3
+* [Vimeo Player API](https://github.com/vimeo/player.js) 2.30.4 – MIT
+
+Unminified sources are available at the links above.
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
+= 1.0.0 =
+* Album Station is now StackFolio, rebuilt from the ground up.
+* New: StackFolio Albums block for the block editor.
+* New: Media Library videos, cached YouTube playlists, and Vimeo titles and thumbnails.
+* New: drag-and-drop photo and video ordering, responsive columns, "All" filter, photo and video count.
+* Improved: Elementor widget with scoped style controls; several grids can share a page.
+* Improved: security hardening and translation support throughout.
+* Automatic migration from Album Station.
 
 == Upgrade Notice ==
 
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-Initial version.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](https://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: https://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
+= 1.0.0 =
+Album Station is now StackFolio. Your albums move over automatically when you activate StackFolio.

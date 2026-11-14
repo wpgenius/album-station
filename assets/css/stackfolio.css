@@ -1,0 +1,218 @@
+/* StackFolio album grid */
+.stackfolio {
+	--sf-cols: var(--stackfolio-columns, 3);
+	--sf-gap: var(--stackfolio-gap, 20px);
+	--sf-ratio: var(--stackfolio-ratio, 3 / 2);
+	--sf-radius: var(--stackfolio-radius, 0);
+	--sf-accent: var(--stackfolio-accent, #1e1e1e);
+	--sf-accent-text: var(--stackfolio-accent-text, #fff);
+	box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+	.stackfolio {
+		--sf-cols: var(--stackfolio-columns-tablet, 2);
+	}
+}
+
+@media (max-width: 767px) {
+	.stackfolio {
+		--sf-cols: var(--stackfolio-columns-mobile, 1);
+	}
+}
+
+.stackfolio *,
+.stackfolio *::before,
+.stackfolio *::after {
+	box-sizing: inherit;
+}
+
+/* Filters */
+.stackfolio-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 var(--stackfolio-filters-spacing, 24px);
+	justify-content: center;
+}
+
+.stackfolio-filters--left {
+	justify-content: flex-start;
+}
+
+.stackfolio-filters--right {
+	justify-content: flex-end;
+}
+
+.stackfolio-filter {
+	appearance: none;
+	margin: 0;
+	padding: 0.45em 1.1em;
+	font: inherit;
+	font-size: 0.95em;
+	line-height: 1.4;
+	color: inherit;
+	background: transparent;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.stackfolio-filter:hover,
+.stackfolio-filter:focus-visible {
+	border-color: var(--sf-accent);
+}
+
+.stackfolio-filter.is-active {
+	color: var(--sf-accent-text);
+	background: var(--sf-accent);
+	border-color: var(--sf-accent);
+}
+
+/* Grid */
+.stackfolio-grid {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 calc(var(--sf-gap) / -2);
+}
+
+.stackfolio-item {
+	width: calc(100% / var(--sf-cols));
+	padding: 0 calc(var(--sf-gap) / 2) var(--sf-gap);
+}
+
+.stackfolio-item[hidden] {
+	display: none;
+}
+
+/* Card */
+.stackfolio-card {
+	position: relative;
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	font: inherit;
+	color: inherit;
+	text-align: inherit;
+	background: none;
+	border: 0;
+	border-radius: var(--sf-radius);
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.stackfolio-card.is-empty {
+	cursor: default;
+}
+
+.stackfolio-card:focus-visible {
+	outline: 2px solid var(--sf-accent);
+	outline-offset: 3px;
+}
+
+.stackfolio-cover {
+	display: block;
+	aspect-ratio: var(--sf-ratio);
+	overflow: hidden;
+	background: #f0f0f0;
+}
+
+.stackfolio-cover img,
+.stackfolio .stackfolio-cover__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	margin: 0;
+	object-fit: cover;
+	transition: transform 0.4s ease;
+}
+
+.stackfolio--hover-zoom .stackfolio-card:not(.is-empty):hover img,
+.stackfolio--hover-zoom .stackfolio-card:focus-visible img {
+	transform: scale(1.1);
+}
+
+.stackfolio-count {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	padding: 0.2em 0.7em;
+	font-size: 0.8em;
+	line-height: 1.5;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.6);
+	border-radius: 999px;
+	pointer-events: none;
+}
+
+.stackfolio-title {
+	margin: 0.6em 0 0;
+	font-size: 1.1em;
+	line-height: 1.3;
+}
+
+.stackfolio-title--left {
+	text-align: left;
+}
+
+.stackfolio-title--center {
+	text-align: center;
+}
+
+.stackfolio-title--right {
+	text-align: right;
+}
+
+.stackfolio-empty {
+	padding: 1em;
+	border: 1px dashed #c3c4c7;
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.stackfolio-cover img,
+	.stackfolio-filter {
+		transition: none;
+	}
+
+	.stackfolio--hover-zoom .stackfolio-card:hover img {
+		transform: none;
+	}
+}
+
+/* Lightbox */
+.stackfolio-lightbox .lg-sub-html h4 {
+	margin: 0 0 0.25em;
+	color: #eee;
+}
+
+.stackfolio-lightbox .lg-sub-html p {
+	margin: 0;
+}
+
+.stackfolio-lightbox--hide-thumbs-fs .lg-fullscreen-on .lg-components {
+	display: none;
+}
+
+.stackfolio-lightbox--hide-thumbs-fs .lg-fullscreen-on .lg-content {
+	top: 0 !important;
+	bottom: 0 !important;
+}
+
+/* Keep the lightbox toolbar clear of the WordPress admin bar. */
+.admin-bar .stackfolio-lightbox .lg-outer,
+.admin-bar .stackfolio-lightbox .lg-backdrop {
+	top: 32px;
+	bottom: 0;
+	height: auto;
+}
+
+@media screen and (max-width: 782px) {
+	.admin-bar .stackfolio-lightbox .lg-outer,
+	.admin-bar .stackfolio-lightbox .lg-backdrop {
+		top: 46px;
+	}
+}
