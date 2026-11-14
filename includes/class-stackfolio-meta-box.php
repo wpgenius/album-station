@@ -142,7 +142,7 @@ class StackFolio_Meta_Box {
 		}
 		$is_video = 0 === strpos( $mime, 'video/' );
 		?>
-		<li class="stackfolio-media-item<?php echo $is_video ? ' is-video' : ''; ?>" data-id="<?php echo esc_attr( $id ); ?>">
+		<li class="stackfolio-media-item<?php echo $is_video ? ' is-video' : ''; ?>" data-id="<?php echo esc_attr( (string) $id ); ?>">
 			<?php
 			if ( $is_video ) {
 				echo '<span class="dashicons dashicons-format-video" aria-hidden="true"></span><span class="stackfolio-media-item__name">' . esc_html( get_the_title( $id ) ) . '</span>';

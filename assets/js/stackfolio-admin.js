@@ -1,44 +1,63 @@
-/* global jQuery, wp, stackfolioAdmin */
+/* global jQuery, stackfolioAdmin */
 ( function ( $ ) {
 	'use strict';
 
 	$( function () {
-		var $list = $( '#stackfolio-media-list' );
-		var $input = $( '#stackfolio-media' );
-		var $clear = $( '#stackfolio-clear-media' );
-		var frame;
+		const $list = $( '#stackfolio-media-list' );
 
 		if ( ! $list.length ) {
 			return;
 		}
 
+		const $input = $( '#stackfolio-media' );
+		const $clear = $( '#stackfolio-clear-media' );
+		let frame;
+
 		function sync() {
-			var ids = $list.children( '.stackfolio-media-item' ).map( function () {
-				return $( this ).data( 'id' );
-			} ).get();
+			const ids = $list
+				.children( '.stackfolio-media-item' )
+				.map( function () {
+					return $( this ).data( 'id' );
+				} )
+				.get();
 			$input.val( ids.join( ',' ) );
 			$clear.prop( 'hidden', ids.length === 0 );
 		}
 
 		function itemHtml( attachment ) {
-			var $li = $( '<li class="stackfolio-media-item"></li>' ).attr( 'data-id', attachment.id );
+			const $li = $( '<li class="stackfolio-media-item"></li>' ).attr(
+				'data-id',
+				attachment.id
+			);
 			if ( attachment.type === 'video' ) {
 				$li.addClass( 'is-video' )
-					.append( '<span class="dashicons dashicons-format-video" aria-hidden="true"></span>' )
-					.append( $( '<span class="stackfolio-media-item__name"></span>' ).text( attachment.title || stackfolioAdmin.video ) );
+					.append(
+						'<span class="dashicons dashicons-format-video" aria-hidden="true"></span>'
+					)
+					.append(
+						$(
+							'<span class="stackfolio-media-item__name"></span>'
+						).text( attachment.title || stackfolioAdmin.video )
+					);
 			} else {
-				var size = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail : attachment;
+				const size =
+					attachment.sizes && attachment.sizes.thumbnail
+						? attachment.sizes.thumbnail
+						: attachment;
 				$li.append( $( '<img alt="">' ).attr( 'src', size.url ) );
 			}
 			$li.append(
-				$( '<button type="button" class="stackfolio-media-item__remove">&times;</button>' ).attr( 'aria-label', stackfolioAdmin.remove )
+				$(
+					'<button type="button" class="stackfolio-media-item__remove">&times;</button>'
+				).attr( 'aria-label', stackfolioAdmin.remove )
 			);
 			return $li;
 		}
 
 		$list.sortable( {
 			items: '.stackfolio-media-item',
-			placeholder: 'stackfolio-media-item stackfolio-media-item--placeholder',
+			placeholder:
+				'stackfolio-media-item stackfolio-media-item--placeholder',
 			tolerance: 'pointer',
 			update: sync,
 		} );
@@ -69,18 +88,23 @@
 			} );
 
 			frame.on( 'select', function () {
-				var existing = $input.val() ? $input.val().split( ',' ) : [];
-				frame.state().get( 'selection' ).each( function ( model ) {
-					var attachment = model.toJSON();
-					if ( existing.indexOf( String( attachment.id ) ) === -1 ) {
-						$list.append( itemHtml( attachment ) );
-						existing.push( String( attachment.id ) );
-					}
-				} );
+				const existing = $input.val() ? $input.val().split( ',' ) : [];
+				frame
+					.state()
+					.get( 'selection' )
+					.each( function ( model ) {
+						const attachment = model.toJSON();
+						if (
+							existing.indexOf( String( attachment.id ) ) === -1
+						) {
+							$list.append( itemHtml( attachment ) );
+							existing.push( String( attachment.id ) );
+						}
+					} );
 				sync();
 			} );
 
 			frame.open();
 		} );
 	} );
-}( jQuery ) );
+} )( jQuery );

@@ -10,12 +10,14 @@
 }
 
 @media (max-width: 1024px) {
+
 	.stackfolio {
 		--sf-cols: var(--stackfolio-columns-tablet, 2);
 	}
 }
 
 @media (max-width: 767px) {
+
 	.stackfolio {
 		--sf-cols: var(--stackfolio-columns-mobile, 1);
 	}
@@ -53,7 +55,7 @@
 	line-height: 1.4;
 	color: inherit;
 	background: transparent;
-	border: 1px solid currentColor;
+	border: 1px solid currentcolor;
 	border-radius: 999px;
 	cursor: pointer;
 	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -173,6 +175,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
 	.stackfolio-cover img,
 	.stackfolio-filter {
 		transition: none;
@@ -211,6 +214,7 @@
 }
 
 @media screen and (max-width: 782px) {
+
 	.admin-bar .stackfolio-lightbox .lg-outer,
 	.admin-bar .stackfolio-lightbox .lg-backdrop {
 		top: 46px;

@@ -1,0 +1,40 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "StackFolio demo",
+		"description": "Installs the latest StackFolio release with sample albums and a demo page.",
+		"author": "wpgenius"
+	},
+	"landingPage": "/stackfolio-demo/",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"features": {
+		"networking": true
+	},
+	"login": true,
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://github.com/wpgenius/stackfolio/releases/latest/download/stackfolio.zip"
+			},
+			"options": {
+				"activate": true
+			}
+		},
+		{
+			"step": "setSiteOptions",
+			"options": {
+				"blogname": "StackFolio demo",
+				"permalink_structure": "/%postname%/"
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php\nrequire_once '/wordpress/wp-load.php';\nrequire_once ABSPATH . 'wp-admin/includes/image.php';\nfunction stackfolio_demo_image( $title, $rgb ) {\n\t$im = imagecreatetruecolor( 1200, 800 );\n\timagefill( $im, 0, 0, imagecolorallocate( $im, $rgb[0], $rgb[1], $rgb[2] ) );\n\timagefilledellipse( $im, 600, 400, 320, 320, imagecolorallocatealpha( $im, 255, 255, 255, 60 ) );\n\t$upload = wp_upload_dir();\n\t$file   = $upload['path'] . '/' . sanitize_title( $title ) . '.jpg';\n\timagejpeg( $im, $file, 85 );\n\t$id = wp_insert_attachment( array( 'post_mime_type' => 'image/jpeg', 'post_title' => $title, 'post_excerpt' => 'Sample photo: ' . $title, 'post_status' => 'inherit' ), $file );\n\twp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );\n\treturn $id;\n}\n$albums = array(\n\tarray( 'Beach Wedding', 'Weddings', array( 38, 120, 200 ), \"https://www.youtube.com/watch?v=aqz-KE-bpKQ\" ),\n\tarray( 'Garden Ceremony', 'Weddings', array( 70, 150, 90 ), '' ),\n\tarray( 'Music Festival', 'Events', array( 200, 60, 90 ), \"https://vimeo.com/76979871\" ),\n\tarray( 'Charity Run', 'Events', array( 230, 140, 40 ), '' ),\n\tarray( 'Studio Portraits', 'Portraits', array( 110, 80, 170 ), '' ),\n\tarray( 'City Lights', 'Portraits', array( 30, 40, 70 ), '' ),\n);\nforeach ( $albums as $album ) {\n\tlist( $title, $category, $rgb, $video ) = $album;\n\t$post_id = wp_insert_post( array( 'post_type' => 'stackfolio_album', 'post_status' => 'publish', 'post_title' => $title ) );\n\t$media   = array();\n\tfor ( $i = 1; $i <= 4; $i++ ) {\n\t\t$media[] = stackfolio_demo_image( $title . ' ' . $i, array( ( $rgb[0] + $i * 25 ) % 255, ( $rgb[1] + $i * 15 ) % 255, $rgb[2] ) );\n\t}\n\tset_post_thumbnail( $post_id, $media[0] );\n\tupdate_post_meta( $post_id, '_stackfolio_media', implode( ',', $media ) );\n\tupdate_post_meta( $post_id, '_stackfolio_video_links', $video );\n\twp_set_object_terms( $post_id, $category, 'stackfolio_category' );\n}\nwp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_name' => 'stackfolio-demo', 'post_title' => 'StackFolio demo',\n\t'post_content' => \"<!-- wp:paragraph --><p>Click a cover to open the album. Use the buttons to filter by category.</p><!-- /wp:paragraph -->\\n<!-- wp:stackfolio/album-grid {\\\"filters\\\":true,\\\"showCount\\\":true,\\\"align\\\":\\\"wide\\\"} /-->\\n<!-- wp:paragraph --><p>Edit albums under StackFolio in the dashboard.</p><!-- /wp:paragraph -->\" ) );"
+		}
+	]
+}

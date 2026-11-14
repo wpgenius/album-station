@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# Applies the repo settings this boilerplate expects. "Use this template"
+# copies files only, so run this once in every new repo (it is safe to re-run).
+#
+#   bin/setup-github.sh                 # repo of the current git checkout
+#   bin/setup-github.sh owner/name      # a specific repo
+#   bin/setup-github.sh --linked-issue off   # don't require an issue for every PR
+#
+# Needs the GitHub CLI (`gh auth login`) with admin rights on the repo.
+#
+# What it sets:
+#   - merges: squash only; commit message = PR title + PR body; delete branch on merge
+#   - labels: release:minor, release:major (bump the automatic version)
+#   - private vulnerability reporting (the "Report a vulnerability" button SECURITY.md points to)
+#   - variable DEPLOY_ENABLED=false (only if not set yet), environment "production"
+#   - variable REQUIRE_LINKED_ISSUE: whether every PR must close an issue. On by
+#     default. Asked once when run in a terminal; --linked-issue on|off sets it.
+#   - deploy key "release-bot" (write) + secret RELEASE_DEPLOY_KEY: the release
+#     workflow pushes its version-bump commit to main with this key
+#   - ruleset "Protect main" on the default branch: no deletion, no force-push,
+#     PRs required (squash), "Linked issue" check required, and the "CI" check
+#     too when the repo has .github/workflows/ci.yml.
+#     Bypass: repository admins (so you can still edit on GitHub directly) and
+#     deploy keys (so the release workflow can commit the version bump).
+#     GitHub Actions' own token cannot be a bypass actor, hence the deploy key.
+#     Note: GitHub lets ANY deploy key with write access bypass, not only
+#     "release-bot", so don't add other write deploy keys to the repo.
+#     Rulesets on a private repo need a paid GitHub plan (Pro, Team or Enterprise).
+set -euo pipefail
+
+command -v gh >/dev/null || { echo "Install the GitHub CLI first: https://cli.github.com" >&2; exit 1; }
+repo="" linked=""
+while [ $# -gt 0 ]; do
+	case "$1" in
+		--linked-issue) linked=${2:-}; shift 2 ;;
+		-h|--help) sed -n '2,/^set -euo/p' "$0" | sed '$d; s/^# \{0,1\}//'; exit 0 ;;
+		-*) echo "Unknown option $1 (see $0 --help)" >&2; exit 1 ;;
+		*) repo=$1; shift ;;
+	esac
+done
+case "$linked" in ''|on|off) ;; *) echo "--linked-issue takes on or off" >&2; exit 1 ;; esac
+[ -n "$repo" ] || repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+[[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "Usage: $0 [owner/name]" >&2; exit 1; }
+echo "Configuring $repo"
+
+echo "- merge settings"
+gh api --silent -X PATCH "repos/$repo" \
+	-F allow_squash_merge=true \
+	-F allow_merge_commit=false \
+	-F allow_rebase_merge=false \
+	-f squash_merge_commit_title=PR_TITLE \
+	-f squash_merge_commit_message=PR_BODY \
+	-F delete_branch_on_merge=true
+
+echo "- private vulnerability reporting"
+gh api --silent -X PUT "repos/$repo/private-vulnerability-reporting" 2>/dev/null \
+	|| echo "  could not enable it (needs a public repo or GitHub Advanced Security); enable it under Settings → Security if available"
+
+echo "- labels"
+gh label create release:minor --repo "$repo" --force --color 1d76db \
+	--description "Release as a minor version (new feature)" >/dev/null
+gh label create release:major --repo "$repo" --force --color b60205 \
+	--description "Release as a major version (breaking change)" >/dev/null
+
+echo "- deploy switch"
+if gh variable get DEPLOY_ENABLED --repo "$repo" >/dev/null 2>&1; then
+	echo "  DEPLOY_ENABLED already set to '$(gh variable get DEPLOY_ENABLED --repo "$repo")'; left as is"
+else
+	gh variable set DEPLOY_ENABLED --repo "$repo" --body false
+	echo "  DEPLOY_ENABLED=false"
+fi
+gh api --silent -X PUT "repos/$repo/environments/production"
+
+echo "- linked-issue rule"
+current=$(gh variable get REQUIRE_LINKED_ISSUE --repo "$repo" 2>/dev/null || true)
+if [ -z "$linked" ] && [ -z "$current" ] && [ -t 0 ]; then
+	read -r -p "  Require every pull request to close an issue? [Y/n] " answer
+	case "$answer" in n|N|no|NO) linked=off ;; *) linked=on ;; esac
+fi
+case "$linked" in
+	on)  gh variable set REQUIRE_LINKED_ISSUE --repo "$repo" --body true;  echo "  on: every PR must close an issue" ;;
+	off) gh variable set REQUIRE_LINKED_ISSUE --repo "$repo" --body false; echo "  off: PRs need no issue; the changelog uses PR titles" ;;
+	*)   echo "  ${current:+REQUIRE_LINKED_ISSUE already set to '$current'; }left as is (on unless it is 'false')" ;;
+esac
+
+echo "- release deploy key"
+if gh secret list --repo "$repo" --json name --jq '.[].name' | grep -qx RELEASE_DEPLOY_KEY; then
+	echo "  RELEASE_DEPLOY_KEY already set; left as is"
+else
+	command -v ssh-keygen >/dev/null || { echo "ssh-keygen is required" >&2; exit 1; }
+	keydir=$(mktemp -d)
+	trap 'rm -rf "$keydir"' EXIT
+	ssh-keygen -q -t ed25519 -N '' -C "release-bot@$repo" -f "$keydir/key"
+	gh repo deploy-key add "$keydir/key.pub" --repo "$repo" --title release-bot --allow-write >/dev/null
+	gh secret set RELEASE_DEPLOY_KEY --repo "$repo" < "$keydir/key"
+	rm -rf "$keydir"
+	echo "  deploy key 'release-bot' added; private key stored as secret RELEASE_DEPLOY_KEY"
+fi
+
+echo "- ruleset 'Protect main'"
+# Require CI only where it exists: a required check that never runs would block every PR.
+checks='{ "context": "Linked issue" }'
+if [ -f "$(dirname "${BASH_SOURCE[0]}")/../.github/workflows/ci.yml" ] \
+	|| gh api --silent "repos/$repo/contents/.github/workflows/ci.yml" >/dev/null 2>&1; then
+	checks+=', { "context": "CI" }'
+	echo "  required checks: Linked issue, CI"
+else
+	echo "  required checks: Linked issue (no ci.yml found)"
+fi
+# actor_id 5 = the "Admin" repository role; DeployKey = any deploy key with write access.
+ruleset=$(cat <<'JSON'
+{
+  "name": "Protect main",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": { "ref_name": { "include": ["~DEFAULT_BRANCH"], "exclude": [] } },
+  "bypass_actors": [
+    { "actor_type": "RepositoryRole", "actor_id": 5, "bypass_mode": "always" },
+    { "actor_type": "DeployKey", "actor_id": null, "bypass_mode": "always" }
+  ],
+  "rules": [
+    { "type": "deletion" },
+    { "type": "non_fast_forward" },
+    { "type": "pull_request", "parameters": {
+        "allowed_merge_methods": ["squash"],
+        "required_approving_review_count": 0,
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": false
+    } },
+    { "type": "required_status_checks", "parameters": {
+        "strict_required_status_checks_policy": false,
+        "required_status_checks": [ __CHECKS__ ]
+    } }
+  ]
+}
+JSON
+)
+ruleset=${ruleset/__CHECKS__/$checks}
+ruleset_failed() {
+	echo "  could not save the ruleset: main is NOT protected." >&2
+	echo "  On a private repo, rulesets need a paid GitHub plan (Pro, Team or Enterprise)." >&2
+	echo "  Make the repo public or upgrade the plan, then run this script again." >&2
+	exit 1
+}
+existing=$(gh api "repos/$repo/rulesets" --jq '.[] | select(.name == "Protect main") | .id' | head -n 1) || ruleset_failed
+if [ -n "$existing" ]; then
+	printf '%s' "$ruleset" | gh api --silent -X PUT "repos/$repo/rulesets/$existing" --input - || ruleset_failed
+	echo "  updated (id $existing)"
+else
+	printf '%s' "$ruleset" | gh api --silent -X POST "repos/$repo/rulesets" --input - || ruleset_failed
+	echo "  created"
+fi
+
+echo "Done. To turn on deploys later: set DEPLOY_METHOD (ftps, ssh or wporg), add its"
+echo "secrets (see .github/workflows/deploy.yml), then set DEPLOY_ENABLED=true."

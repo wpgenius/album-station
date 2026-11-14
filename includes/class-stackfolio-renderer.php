@@ -88,7 +88,14 @@ class StackFolio_Renderer {
 			if ( is_string( $args[ $key ] ) ) {
 				$args[ $key ] = '' === trim( $args[ $key ] ) ? array() : array_map( 'trim', explode( ',', $args[ $key ] ) );
 			}
-			$args[ $key ] = array_values( array_filter( (array) $args[ $key ], 'strlen' ) );
+			$args[ $key ] = array_values(
+				array_filter(
+					(array) $args[ $key ],
+					static function ( $value ) {
+						return '' !== (string) $value;
+					}
+				)
+			);
 		}
 		$args['include'] = array_values( array_filter( array_map( 'absint', $args['include'] ) ) );
 
@@ -282,7 +289,7 @@ class StackFolio_Renderer {
 			$buttons[] = sprintf(
 				'<button type="button" class="stackfolio-filter%1$s" data-filter=".stackfolio-cat-%2$s" aria-pressed="%3$s">%4$s</button>',
 				$first ? ' is-active' : '',
-				esc_attr( $term->term_id ),
+				esc_attr( (string) $term->term_id ),
 				$first ? 'true' : 'false',
 				esc_html( $term->name )
 			);

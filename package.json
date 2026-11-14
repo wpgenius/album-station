@@ -1,0 +1,19 @@
+{
+	"name": "stackfolio",
+	"version": "1.0.0",
+	"private": true,
+	"description": "StackFolio: photo and video album gallery for WordPress, with a Gutenberg block and an Elementor widget.",
+	"license": "GPL-3.0-or-later",
+	"engines": {
+		"node": "^20.19.0 || >=22.12.0"
+	},
+	"scripts": {
+		"lint": "npm run lint:js && npm run lint:css",
+		"lint:js": "wp-scripts lint-js assets/js blocks",
+		"lint:css": "wp-scripts lint-style \"assets/css/**/*.css\"",
+		"format": "wp-scripts format assets/js assets/css blocks"
+	},
+	"devDependencies": {
+		"@wordpress/scripts": "^37.1.0"
+	}
+}
