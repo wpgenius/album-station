@@ -1,4 +1,4 @@
-# StackFolio
+# StackFolio – Photo & Video Album Gallery
 
 **Stunning photo & video albums for WordPress.**
 
