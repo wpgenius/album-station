@@ -1,4 +1,4 @@
-=== StackFolio – Photo & Video Album Gallery ===
+=== StackFolio ===
 Contributors: mkrndmane, wpgenius
 Tags: gallery, album, portfolio, lightbox, video gallery
 Requires at least: 6.3
