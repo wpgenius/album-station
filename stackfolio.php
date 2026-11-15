@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       StackFolio
- * Plugin URI:        https://wpgenius.in/
+ * Plugin URI:        https://github.com/wpgenius/stackfolio
  * Description:       Stunning photo and video albums. One cover image opens the full album in a popup, with a filterable grid for Elementor and Gutenberg.
  * Version:           1.0.2
  * Requires at least: 6.3
