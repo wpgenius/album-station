@@ -130,6 +130,10 @@ Unminified sources are available at the links above.
 == Changelog ==
 
 = 1.0.0 =
+
+* Initial release.
+
+= 1.0.0 =
 * Album Station is now StackFolio, rebuilt from the ground up.
 * New: StackFolio Albums block for the block editor.
 * New: Media Library videos, cached YouTube playlists, and Vimeo titles and thumbnails.
