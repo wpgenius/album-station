@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       StackFolio
- * Plugin URI:        https://wpgenius.in/
+ * Plugin URI:        https://github.com/wpgenius/stackfolio
  * Description:       Stunning photo and video albums. One cover image opens the full album in a popup, with a filterable grid for Elementor and Gutenberg.
  * Version:           1.0.2
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Team WPGenius
- * Author URI:        https://wpgenius.in/
+ * Author URI:        https://profiles.wordpress.org/wpgenius/
  * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       stackfolio
