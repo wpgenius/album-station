@@ -7,7 +7,7 @@
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Team WPGenius
- * Author URI:        https://wpgenius.in/
+ * Author URI:        https://profiles.wordpress.org/wpgenius/
  * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       stackfolio
