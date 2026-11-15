@@ -4,7 +4,7 @@ Tags: gallery, album, portfolio, lightbox, video gallery
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,11 @@ No. Albums are shown only through the block, widget or shortcode. Developers can
 Unminified sources are available at the links above.
 
 == Changelog ==
+
+= 1.0.2 =
+
+* Dragging photos sideways in the album editor doesn't reorder them (#32)
+* Uploaded videos without a poster look like a copy of the album cover (#33)
 
 = 1.0.1 =
 
