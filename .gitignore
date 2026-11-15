@@ -1,18 +1,80 @@
-# OS / editors
+# --------------------------------------------------
+# OS
+# --------------------------------------------------
 .DS_Store
 Thumbs.db
-.idea/
-.vscode/
-*.swp
 
-# Dependencies and build output
-node_modules/
-vendor/
-dist/
-*.zip
-*.tar.gz
-
-# Logs and local tooling
+# --------------------------------------------------
+# Logs
+# --------------------------------------------------
 *.log
+npm-debug.log*
+
+# --------------------------------------------------
+# Environment (copy .env.example to .env)
+# --------------------------------------------------
+.env
+!.env.example
+
+# --------------------------------------------------
+# Node
+# --------------------------------------------------
+node_modules/
+
+# --------------------------------------------------
+# Composer
+# --------------------------------------------------
+/vendor/
+
+# --------------------------------------------------
+# Tooling caches
+# --------------------------------------------------
+.phpcs.cache
+.eslintcache
+.stylelintcache
+phpcs-report.xml
+.phpunit.result.cache
+.phpunit.cache/
 .wp-env.override.json
+
+# --------------------------------------------------
+# Database / Local Development
+# --------------------------------------------------
+*.sql
+*.sqlite
+database/
+
+# --------------------------------------------------
+# Dreamweaver (legacy)
+# --------------------------------------------------
+_notes
+_compareTemp
+configs/
+dwsync.xml
+includes/_notes/dwsync.xml
+/dwsync.xml
+dw_php_codehinting.config
+*.mno
+*.lck
+
+# --------------------------------------------------
+# Release build output
+# --------------------------------------------------
+/release/
+/*.zip
+
+# --------------------------------------------------
+# IDE / Editors (incl. SFTP sync configs)
+# --------------------------------------------------
+.vscode/
+.vscodeignore
+.idea/
+sftp.json
+
+# --------------------------------------------------
+# Project-specific (kept from this repo)
+# --------------------------------------------------
+*.swp
+dist/
+*.tar.gz
 .claude/

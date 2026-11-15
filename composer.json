@@ -1,0 +1,54 @@
+{
+	"name": "wpgenius/stackfolio",
+	"description": "StackFolio: photo and video album gallery for WordPress, with a Gutenberg block and an Elementor widget.",
+	"type": "wordpress-plugin",
+	"license": "GPL-3.0-or-later",
+	"homepage": "https://github.com/wpgenius/stackfolio",
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"brain/monkey": "^2.6",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"php-parallel-lint/php-parallel-lint": "^1.4",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"phpstan/extension-installer": "^1.4",
+		"phpunit/phpunit": "^9.6",
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"wp-cli/i18n-command": "^2.6",
+		"wp-coding-standards/wpcs": "^3.1",
+		"yoast/phpunit-polyfills": "^4.0"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		},
+		"optimize-autoloader": true,
+		"platform": {
+			"php": "7.4"
+		},
+		"sort-packages": true
+	},
+	"scripts": {
+		"lint": "parallel-lint --exclude vendor --exclude node_modules .",
+		"phpcs": "phpcs",
+		"phpcbf": "phpcbf",
+		"make-pot": "wp i18n make-pot . languages/stackfolio.pot --slug=stackfolio --domain=stackfolio --exclude=vendor,node_modules,assets/vendor",
+		"test": "phpunit",
+		"phpstan": "phpstan analyse --memory-limit=1G"
+	},
+	"scripts-descriptions": {
+		"lint": "Check every PHP file for syntax errors.",
+		"phpcs": "Check code against WordPress Coding Standards.",
+		"phpcbf": "Automatically fix coding standards issues where possible.",
+		"make-pot": "Regenerate the translation template in languages/.",
+		"test": "Run the unit tests (no WordPress install needed).",
+		"phpstan": "Static analysis (PHPStan, level set in phpstan.neon.dist)."
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"StackFolio\\Tests\\": "tests/"
+		}
+	}
+}

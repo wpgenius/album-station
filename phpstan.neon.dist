@@ -1,0 +1,19 @@
+# Static analysis: finds wrong types, calls to things that don't exist,
+# unchecked WordPress return values (false, WP_Error, null) and dead code.
+# WordPress functions are known through szepeviktor/phpstan-wordpress.
+#
+#   composer phpstan
+#
+# Raise the level (max 10) as the code gets stricter.
+parameters:
+	level: 5
+	phpVersion: 70400
+	paths:
+		- stackfolio.php
+		- uninstall.php
+		- includes
+	bootstrapFiles:
+		- tests/phpstan/bootstrap.php
+	# Elementor isn't installed in CI; these stubs describe the parts StackFolio uses.
+	scanFiles:
+		- tests/phpstan/elementor-stubs.php

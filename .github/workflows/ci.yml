@@ -1,0 +1,144 @@
+name: CI
+
+# Checks every pull request (and pushes to main): PHPStan static analysis,
+# PHP syntax and unit tests on each supported PHP version, WordPress Coding
+# Standards, JS/CSS lint, and the official WordPress Plugin Check on the plugin
+# as it ships (the release zip).
+#
+# StackFolio: adapted from the standard. The block is plain JavaScript with no
+# build step, so there is no block-build check, and there are no integration
+# tests or rename script yet, so those jobs are left out.
+#
+# The last job, "CI", passes only when every other job passed. It is the one
+# check the "Protect main" ruleset requires (bin/setup-github.sh), so jobs can
+# be added or renamed here without touching the ruleset.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  php-lint:
+    name: PHP ${{ matrix.php }} syntax and tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Keep the lowest version in sync with "Requires PHP" in the plugin header.
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer
+
+      - run: composer install --no-interaction --no-progress
+
+      - run: composer lint
+
+      - run: composer test
+
+  phpcs:
+    name: Coding standards (PHPCS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer, cs2pr
+
+      - run: composer install --no-interaction --no-progress
+
+      - name: Run PHPCS (annotates the PR diff)
+        run: vendor/bin/phpcs -q --report-full --report-checkstyle=./phpcs-report.xml || (cs2pr ./phpcs-report.xml && exit 1)
+
+  phpstan:
+    name: Static analysis (PHPStan)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer
+
+      - run: composer install --no-interaction --no-progress
+
+      - run: composer phpstan -- --no-progress --error-format=github
+
+  js-css-lint:
+    name: JS/CSS lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+
+  plugin-check:
+    name: Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build the plugin as it ships
+        id: package
+        run: |
+          set -euo pipefail
+          . .github/scripts/lib.sh
+          slug="${{ vars.PLUGIN_SLUG }}"
+          slug="${slug:-${GITHUB_REPOSITORY#*/}}"
+          build_package "$RUNNER_TEMP/package/$slug"
+          echo "dir=$RUNNER_TEMP/package/$slug" >> "$GITHUB_OUTPUT"
+          echo "slug=$slug" >> "$GITHUB_OUTPUT"
+
+      # The checks WordPress.org runs when reviewing a plugin. Errors fail the
+      # job; warnings are shown as annotations on the PR.
+      - uses: WordPress/plugin-check-action@10857da14b6c2246d15402b3e69f777edcf8c12e # v1.1.9
+        with:
+          build-dir: ${{ steps.package.outputs.dir }}
+          slug: ${{ steps.package.outputs.slug }}
+
+
+  ci:
+    name: CI
+    # Runs even when a job above failed, so the required check always reports.
+    if: always()
+    needs: [php-lint, phpcs, phpstan, js-css-lint, plugin-check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All jobs passed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != success ]; then
+              echo "::error::A CI job did not pass ($result)."
+              exit 1
+            fi
+          done
