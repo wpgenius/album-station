@@ -7,12 +7,12 @@
 	margin-top: 0.5em;
 }
 
+/* Floated, not flex: jQuery UI sortable only sorts sideways when
+   items float. */
 .stackfolio-media-list {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 8px;
+	display: flow-root;
 	margin: 12px 0;
-	padding: 12px;
+	padding: 12px 4px 4px 12px;
 	min-height: 40px;
 	background: #f6f7f7;
 	border: 1px dashed #c3c4c7;
@@ -24,9 +24,10 @@
 
 .stackfolio-media-item {
 	position: relative;
+	float: left;
 	width: 100px;
 	height: 100px;
-	margin: 0;
+	margin: 0 8px 8px 0;
 	background: #fff;
 	border: 1px solid #dcdcde;
 	cursor: move;

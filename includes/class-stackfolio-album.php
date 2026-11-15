@@ -81,7 +81,7 @@ class StackFolio_Album {
 
 		$media = array();
 		foreach ( self::get_media_ids( $post_id ) as $attachment_id ) {
-			$item = self::attachment_item( $attachment_id, $post_id, $args );
+			$item = self::attachment_item( $attachment_id, $args );
 			if ( $item ) {
 				$media[] = $item;
 			}
@@ -107,11 +107,10 @@ class StackFolio_Album {
 	 * Lightbox item for one Media Library attachment.
 	 *
 	 * @param int   $attachment_id Attachment ID.
-	 * @param int   $post_id       Album ID (for the fallback poster).
 	 * @param array $args          Render arguments.
 	 * @return array|null
 	 */
-	private static function attachment_item( $attachment_id, $post_id, array $args ) {
+	private static function attachment_item( $attachment_id, array $args ) {
 		$attachment = get_post( $attachment_id );
 		if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
 			return null;
@@ -137,11 +136,11 @@ class StackFolio_Album {
 		}
 
 		if ( 0 === strpos( $mime, 'video/' ) && $args['videos'] ) {
+			// Only the video's own image is a poster. Without one the player shows the
+			// video's first frame, and the thumbnail strip a neutral video icon, so the
+			// video never looks like a copy of the album cover.
 			$poster = get_the_post_thumbnail_url( $attachment_id, 'large' );
-			if ( ! $poster ) {
-				$poster = get_the_post_thumbnail_url( $post_id, 'large' );
-			}
-			$item = array(
+			$item   = array(
 				'video' => array(
 					'source'     => array(
 						array(
@@ -155,7 +154,7 @@ class StackFolio_Album {
 						'playsinline' => true,
 					),
 				),
-				'thumb' => $poster ? $poster : '',
+				'thumb' => $poster ? $poster : STACKFOLIO_URL . 'assets/images/video-thumb.svg',
 			);
 			if ( $poster ) {
 				$item['poster'] = $poster;
