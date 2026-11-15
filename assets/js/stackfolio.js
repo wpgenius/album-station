@@ -53,8 +53,6 @@
 			dynamic: true,
 			dynamicEl: items,
 			plugins,
-			// lightGallery is used under its GPLv3 licence; StackFolio is GPLv3 too.
-			licenseKey: 'GPLv3',
 			addClass: classes.join( ' ' ),
 			download: !! config.download,
 			slideShowAutoplay: !! config.slideshowAutostart,
