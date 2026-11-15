@@ -3,7 +3,7 @@
  * Plugin Name:       StackFolio
  * Plugin URI:        https://wpgenius.in/
  * Description:       Stunning photo and video albums. One cover image opens the full album in a popup, with a filterable grid for Elementor and Gutenberg.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Team WPGenius
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STACKFOLIO_VERSION', '1.0.0' );
+define( 'STACKFOLIO_VERSION', '1.0.1' );
 define( 'STACKFOLIO_FILE', __FILE__ );
 define( 'STACKFOLIO_PATH', plugin_dir_path( __FILE__ ) );
 define( 'STACKFOLIO_URL', plugin_dir_url( __FILE__ ) );

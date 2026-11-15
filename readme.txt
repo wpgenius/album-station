@@ -4,7 +4,7 @@ Tags: gallery, album, portfolio, lightbox, video gallery
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,12 @@ No. Albums are shown only through the block, widget or shortcode. Developers can
 Unminified sources are available at the links above.
 
 == Changelog ==
+
+= 1.0.1 =
+
+* Match the readme.txt plugin name to the plugin header (#28)
+* Remove the Domain Path header (#29)
+* Use lightGallery's default licence key (#30)
 
 = 1.0.0 =
 
