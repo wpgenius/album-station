@@ -28,7 +28,7 @@ It suits photographers, studios, agencies, event organisers, schools and anyone 
 * **Albums, not single images.** Each album is a stack of photos and videos behind one cover.
 * **Photos and videos together.** Media Library images and MP4/WebM videos, YouTube videos, YouTube playlists and Vimeo videos.
 * **Lightbox** powered by lightGallery, with thumbnails, zoom, fullscreen, slideshow and captions.
-* **Category filters** with smooth Isotope animations. Only categories that have albums in the grid are shown.
+* **Category filters** with smooth animations. Only categories that have albums in the grid are shown.
 * **Gutenberg block** with live preview.
 * **Elementor widget** with full style controls for cards, titles and filter buttons.
 * **Shortcode** for any other page builder or theme.
@@ -122,7 +122,6 @@ No. Albums are shown only through the block, widget or shortcode. Developers can
 == Third-party libraries ==
 
 * [lightGallery](https://github.com/sachinchoolur/lightGallery) 2.9.0 – GPLv3
-* [Isotope](https://github.com/metafizzy/isotope) 3.0.6 – GPLv3
 * [Vimeo Player API](https://github.com/vimeo/player.js) 2.30.4 – MIT
 
 Unminified sources are available at the links above.

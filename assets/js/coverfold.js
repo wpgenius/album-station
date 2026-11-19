@@ -1,5 +1,5 @@
 /**
- * Coverfold front end: category filters (Isotope) and album lightbox (lightGallery).
+ * Coverfold front end: animated category filters and the album lightbox.
  */
 ( function () {
 	'use strict';
@@ -97,6 +97,104 @@
 		} );
 	}
 
+	const DURATION = 400;
+
+	// Show the matching items. Cards that stay glide to their new place, new
+	// cards scale in and removed cards scale out (FLIP, no library needed).
+	function applyFilter( grid, filter ) {
+		const items = Array.prototype.slice.call(
+			grid.querySelectorAll( ':scope > .coverfold-item' )
+		);
+		const matches = function ( item ) {
+			return filter === '*' || item.matches( filter );
+		};
+		const animate =
+			typeof window.Element.prototype.animate === 'function' &&
+			! (
+				window.matchMedia &&
+				window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches
+			);
+
+		if ( ! animate ) {
+			items.forEach( function ( item ) {
+				item.hidden = ! matches( item );
+			} );
+			return;
+		}
+
+		const gridRect = grid.getBoundingClientRect();
+		const before = new Map();
+		items.forEach( function ( item ) {
+			if ( ! item.hidden ) {
+				before.set( item, item.getBoundingClientRect() );
+			}
+		} );
+
+		// Ghosts of the leaving cards, so they can fade out where they were.
+		const ghosts = [];
+		items.forEach( function ( item ) {
+			if ( item.hidden || matches( item ) ) {
+				return;
+			}
+			const rect = before.get( item );
+			const ghost = item.cloneNode( true );
+			ghost.setAttribute( 'aria-hidden', 'true' );
+			ghost.classList.add( 'coverfold-item--ghost' );
+			ghost.style.left = rect.left - gridRect.left + 'px';
+			ghost.style.top = rect.top - gridRect.top + 'px';
+			ghost.style.width = rect.width + 'px';
+			ghosts.push( ghost );
+		} );
+
+		items.forEach( function ( item ) {
+			item.hidden = ! matches( item );
+		} );
+
+		ghosts.forEach( function ( ghost ) {
+			grid.appendChild( ghost );
+			ghost
+				.animate(
+					[
+						{ opacity: 1, transform: 'scale(1)' },
+						{ opacity: 0, transform: 'scale(0.6)' },
+					],
+					{ duration: DURATION, easing: 'ease-in' }
+				)
+				.finished.then( function () {
+					ghost.remove();
+				} );
+		} );
+
+		items.forEach( function ( item ) {
+			if ( item.hidden ) {
+				return;
+			}
+			const old = before.get( item );
+			if ( ! old ) {
+				item.animate(
+					[
+						{ opacity: 0, transform: 'scale(0.6)' },
+						{ opacity: 1, transform: 'scale(1)' },
+					],
+					{ duration: DURATION, easing: 'ease-out' }
+				);
+				return;
+			}
+			const now = item.getBoundingClientRect();
+			const dx = old.left - now.left;
+			const dy = old.top - now.top;
+			if ( dx || dy ) {
+				item.animate(
+					[
+						{ transform: 'translate(' + dx + 'px, ' + dy + 'px)' },
+						{ transform: 'none' },
+					],
+					{ duration: DURATION, easing: 'ease' }
+				);
+			}
+		} );
+	}
+
 	function initFilters( root ) {
 		const grid = root.querySelector( '.coverfold-grid' );
 		const buttons = Array.prototype.slice.call(
@@ -107,53 +205,25 @@
 		}
 
 		const active =
-			root.querySelector( '.coverfold-filter.is-active' ) ||
-			buttons[ 0 ];
-		let iso = null;
-
-		function applyFallback( filter ) {
-			Array.prototype.forEach.call(
-				grid.querySelectorAll( '.coverfold-item' ),
-				function ( item ) {
-					item.hidden = filter !== '*' && ! item.matches( filter );
-				}
-			);
-		}
-
-		if ( typeof window.Isotope === 'function' ) {
-			iso = new window.Isotope( grid, {
-				itemSelector: '.coverfold-item',
-				layoutMode: 'fitRows',
-				percentPosition: true,
-				filter: active.getAttribute( 'data-filter' ),
-			} );
-			Array.prototype.forEach.call(
-				grid.querySelectorAll( 'img' ),
-				function ( img ) {
-					if ( ! img.complete ) {
-						img.addEventListener(
-							'load',
-							function () {
-								iso.layout();
-							},
-							{ once: true }
-						);
-					}
-				}
-			);
-		} else {
-			applyFallback( active.getAttribute( 'data-filter' ) );
-		}
+			root.querySelector( '.coverfold-filter.is-active' ) || buttons[ 0 ];
+		const initial = active.getAttribute( 'data-filter' ) || '*';
+		Array.prototype.forEach.call(
+			grid.querySelectorAll( ':scope > .coverfold-item' ),
+			function ( item ) {
+				item.hidden = initial !== '*' && ! item.matches( initial );
+			}
+		);
 
 		buttons.forEach( function ( button ) {
 			button.addEventListener( 'click', function () {
-				const filter = button.getAttribute( 'data-filter' );
-				setActive( buttons, button );
-				if ( iso ) {
-					iso.arrange( { filter } );
-				} else {
-					applyFallback( filter );
+				if ( button.classList.contains( 'is-active' ) ) {
+					return;
 				}
+				setActive( buttons, button );
+				applyFilter(
+					grid,
+					button.getAttribute( 'data-filter' ) || '*'
+				);
 			} );
 		} );
 	}

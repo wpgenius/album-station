@@ -8,13 +8,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers lightGallery, Isotope and the Coverfold front-end files.
+ * Registers the lightbox and the Coverfold front-end files.
  * They are enqueued only where a grid is rendered.
  */
 class Coverfold_Assets {
 
 	const LIGHTGALLERY_VERSION = '2.9.0';
-	const ISOTOPE_VERSION      = '3.0.6';
 	const VIMEO_PLAYER_VERSION = '2.30.4';
 
 	/**
@@ -64,7 +63,6 @@ class Coverfold_Assets {
 			$deps[] = $handle;
 		}
 
-		wp_register_script( 'coverfold-isotope', $vendor . 'isotope/isotope.pkgd.min.js', array(), self::ISOTOPE_VERSION, $strategy );
 		wp_register_script( 'coverfold', COVERFOLD_URL . 'assets/js/coverfold.js', $deps, COVERFOLD_VERSION, $strategy );
 		wp_localize_script(
 			'coverfold',
@@ -77,14 +75,9 @@ class Coverfold_Assets {
 
 	/**
 	 * Enqueue what a rendered grid needs.
-	 *
-	 * @param bool $filters Whether the grid has category filters (needs Isotope).
 	 */
-	public static function enqueue( $filters = false ) {
+	public static function enqueue() {
 		wp_enqueue_style( 'coverfold' );
-		if ( $filters ) {
-			wp_enqueue_script( 'coverfold-isotope' );
-		}
 		wp_enqueue_script( 'coverfold' );
 	}
 }

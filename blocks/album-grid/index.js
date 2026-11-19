@@ -291,12 +291,7 @@
 			el(
 				c.PanelBody,
 				{ title: __( 'Lightbox', 'coverfold' ), initialOpen: false },
-				toggle(
-					a,
-					set,
-					'videos',
-					__( 'Include videos', 'coverfold' )
-				),
+				toggle( a, set, 'videos', __( 'Include videos', 'coverfold' ) ),
 				toggle(
 					a,
 					set,

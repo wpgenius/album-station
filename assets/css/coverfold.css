@@ -74,6 +74,7 @@
 
 /* Grid */
 .coverfold-grid {
+	position: relative;
 	display: flex;
 	flex-wrap: wrap;
 	margin: 0 calc(var(--sf-gap) / -2);
@@ -86,6 +87,13 @@
 
 .coverfold-item[hidden] {
 	display: none;
+}
+
+/* A removed card fading out while the filter animates. */
+.coverfold-item--ghost {
+	position: absolute;
+	margin: 0;
+	pointer-events: none;
 }
 
 /* Card */

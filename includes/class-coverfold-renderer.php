@@ -180,7 +180,7 @@ class Coverfold_Renderer {
 			return '';
 		}
 
-		Coverfold_Assets::enqueue( $args['filters'] );
+		Coverfold_Assets::enqueue();
 		++self::$instance;
 
 		$cards     = array();

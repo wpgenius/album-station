@@ -78,7 +78,7 @@ class Coverfold_Elementor_Widget extends Widget_Base {
 	 * @return string[]
 	 */
 	public function get_script_depends() {
-		return array( 'coverfold-isotope', 'coverfold' );
+		return array( 'coverfold' );
 	}
 
 	/**
