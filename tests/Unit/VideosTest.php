@@ -48,6 +48,9 @@ class VideosTest extends TestCase {
 			'other site'            => array( 'https://example.com/video.mp4', null, null ),
 			'empty'                 => array( '', null, null ),
 			'not a link'            => array( 'not a link', null, null ),
+			'array v parameter'     => array( 'https://www.youtube.com/watch?v[]=dQw4w9WgXcQ', null, null ),
+			'array list parameter'  => array( 'https://www.youtube.com/playlist?list[]=PLx', null, null ),
+			'array Vimeo hash'      => array( 'https://player.vimeo.com/video/76979871?h[]=abc', 'vimeo', '76979871' ),
 		);
 	}
 
