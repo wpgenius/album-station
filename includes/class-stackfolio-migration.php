@@ -103,7 +103,7 @@ class StackFolio_Migration {
 		}
 
 		if ( $ids ) {
-			self::migrate_terms();
+			self::migrate_terms( $ids );
 		}
 
 		self::migrate_settings();
@@ -135,8 +135,14 @@ class StackFolio_Migration {
 
 		if ( 'playlist' === $choice ) {
 			foreach ( self::split( get_post_meta( $id, 'playlist_id', true ) ) as $playlist ) {
-				$parsed  = StackFolio_Videos::parse( $playlist );
-				$links[] = $parsed ? $parsed['url'] : 'https://www.youtube.com/playlist?list=' . rawurlencode( $playlist );
+				$parsed = StackFolio_Videos::parse( $playlist );
+				if ( $parsed ) {
+					$links[] = $parsed['url'];
+				} elseif ( preg_match( '#^https?://#i', $playlist ) ) {
+					$links[] = $playlist; // Unrecognised link: keep it, the editor flags it.
+				} else {
+					$links[] = 'https://www.youtube.com/playlist?list=' . rawurlencode( $playlist );
+				}
 			}
 		} else {
 			$values = array_merge(
@@ -164,29 +170,117 @@ class StackFolio_Migration {
 	}
 
 	/**
-	 * Move album_category terms to stackfolio_category.
+	 * Move the album_category terms of the migrated albums to stackfolio_category.
+	 *
+	 * A term used only by migrated albums is moved as it is. A term that other
+	 * content still uses stays in album_category, and the migrated albums get a
+	 * copy of it in stackfolio_category instead. Terms no migrated album uses are
+	 * left alone. Plain SQL, because album_category is usually no longer
+	 * registered once Album Station is deactivated.
+	 *
+	 * @param int[] $album_ids Migrated album IDs.
 	 */
-	private static function migrate_terms() {
+	private static function migrate_terms( array $album_ids ) {
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- One-time migration.
-		$term_ids = $wpdb->get_col( $wpdb->prepare( "SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s", self::LEGACY_TAXONOMY ) );
-		if ( ! $term_ids ) {
+		$album_ids = array_values( array_filter( array_map( 'intval', $album_ids ) ) );
+		if ( ! $album_ids ) {
+			return;
+		}
+		$id_list = implode( ',', $album_ids ); // Integers only, safe to inline.
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- One-time migration; no API moves terms between taxonomies, and $id_list holds only integers.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DISTINCT tt.term_taxonomy_id, tt.term_id, tt.parent, tt.description FROM {$wpdb->term_taxonomy} tt INNER JOIN {$wpdb->term_relationships} tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy = %s AND tr.object_id IN ($id_list)",
+				self::LEGACY_TAXONOMY
+			)
+		);
+		if ( ! $rows ) {
 			return;
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- No API renames a taxonomy.
-		$wpdb->update(
-			$wpdb->term_taxonomy,
-			array( 'taxonomy' => StackFolio_Post_Type::TAXONOMY ),
-			array( 'taxonomy' => self::LEGACY_TAXONOMY ),
-			array( '%s' ),
-			array( '%s' )
-		);
+		$map      = array(); // Old term_id => new term_id.
+		$new_ttid = array(); // New term_taxonomy_id => old parent term_id.
+		$touched  = array();
 
-		$term_ids = array_map( 'intval', $term_ids );
-		clean_term_cache( $term_ids, self::LEGACY_TAXONOMY );
-		clean_term_cache( $term_ids, StackFolio_Post_Type::TAXONOMY );
+		foreach ( $rows as $row ) {
+			$ttid    = (int) $row->term_taxonomy_id;
+			$term_id = (int) $row->term_id;
+			$shared  = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->term_relationships} WHERE term_taxonomy_id = %d AND object_id NOT IN ($id_list)",
+					$ttid
+				)
+			);
+
+			if ( 0 === $shared ) {
+				$wpdb->update( $wpdb->term_taxonomy, array( 'taxonomy' => StackFolio_Post_Type::TAXONOMY ), array( 'term_taxonomy_id' => $ttid ), array( '%s' ), array( '%d' ) );
+				$map[ $term_id ]   = $term_id;
+				$new_ttid[ $ttid ] = (int) $row->parent;
+				$touched[]         = $term_id;
+				continue;
+			}
+
+			// Shared with content that stays: copy the term for the migrated albums.
+			$term = $wpdb->get_row( $wpdb->prepare( "SELECT name, slug FROM {$wpdb->terms} WHERE term_id = %d", $term_id ) );
+			if ( ! $term ) {
+				continue;
+			}
+			$wpdb->insert(
+				$wpdb->terms,
+				array(
+					'name' => $term->name,
+					'slug' => $term->slug,
+				),
+				array( '%s', '%s' )
+			);
+			$copy_id = (int) $wpdb->insert_id;
+			$wpdb->insert(
+				$wpdb->term_taxonomy,
+				array(
+					'term_id'     => $copy_id,
+					'taxonomy'    => StackFolio_Post_Type::TAXONOMY,
+					'description' => (string) $row->description,
+					'parent'      => 0,
+					'count'       => 0,
+				),
+				array( '%d', '%s', '%s', '%d', '%d' )
+			);
+			$copy_ttid = (int) $wpdb->insert_id;
+			$wpdb->query(
+				$wpdb->prepare(
+					"UPDATE {$wpdb->term_relationships} SET term_taxonomy_id = %d WHERE term_taxonomy_id = %d AND object_id IN ($id_list)",
+					$copy_ttid,
+					$ttid
+				)
+			);
+			$map[ $term_id ]        = $copy_id;
+			$new_ttid[ $copy_ttid ] = (int) $row->parent;
+			$touched[]              = $term_id;
+			$touched[]              = $copy_id;
+		}
+
+		// Keep the hierarchy where the parent moved too; otherwise make it top level.
+		foreach ( $new_ttid as $ttid => $old_parent ) {
+			$parent = isset( $map[ $old_parent ] ) ? $map[ $old_parent ] : 0;
+			$wpdb->update( $wpdb->term_taxonomy, array( 'parent' => $parent ), array( 'term_taxonomy_id' => $ttid ), array( '%d' ), array( '%d' ) );
+		}
+
+		// Recount every term involved, in both taxonomies.
+		$wpdb->query(
+			$wpdb->prepare(
+				"UPDATE {$wpdb->term_taxonomy} SET count = ( SELECT COUNT(*) FROM {$wpdb->term_relationships} WHERE {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id ) WHERE taxonomy IN ( %s, %s )",
+				self::LEGACY_TAXONOMY,
+				StackFolio_Post_Type::TAXONOMY
+			)
+		);
+		// phpcs:enable
+
+		$touched = array_values( array_unique( $touched ) );
+		clean_term_cache( $touched, self::LEGACY_TAXONOMY );
+		clean_term_cache( $touched, StackFolio_Post_Type::TAXONOMY );
+		clean_object_term_cache( $album_ids, StackFolio_Post_Type::POST_TYPE );
 		delete_option( self::LEGACY_TAXONOMY . '_children' );
 		delete_option( StackFolio_Post_Type::TAXONOMY . '_children' );
 	}

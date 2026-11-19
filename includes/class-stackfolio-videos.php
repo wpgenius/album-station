@@ -50,6 +50,8 @@ class StackFolio_Videos {
 		$query = array();
 		if ( ! empty( $parts['query'] ) ) {
 			parse_str( $parts['query'], $query );
+			// `?v[]=x` gives an array; only plain string values are usable.
+			$query = array_filter( $query, 'is_string' );
 		}
 
 		if ( 'youtu.be' === $host ) {
