@@ -124,11 +124,26 @@ class StackFolio_Album {
 			if ( ! $full ) {
 				return null;
 			}
-			$item = array(
-				'src'   => $full[0],
-				'thumb' => (string) wp_get_attachment_image_url( $attachment_id, 'thumbnail' ),
-				'alt'   => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
+			/**
+			 * Filters the image size shown in the lightbox. The original is still
+			 * used for downloads, and a srcset lets the browser pick a fitting size.
+			 *
+			 * @param string $size          Image size name.
+			 * @param int    $attachment_id Attachment ID.
+			 */
+			$size   = apply_filters( 'stackfolio_lightbox_image_size', '2048x2048', $attachment_id );
+			$large  = wp_get_attachment_image_src( $attachment_id, $size );
+			$item   = array(
+				'src'         => $large ? $large[0] : $full[0],
+				'thumb'       => (string) wp_get_attachment_image_url( $attachment_id, 'thumbnail' ),
+				'alt'         => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
+				'downloadUrl' => $full[0],
 			);
+			$srcset = wp_get_attachment_image_srcset( $attachment_id, $size );
+			if ( $srcset ) {
+				$item['srcset'] = $srcset;
+				$item['sizes']  = '100vw';
+			}
 			if ( $caption ) {
 				$item['subHtml'] = $caption;
 			}

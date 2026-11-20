@@ -182,6 +182,7 @@ class StackFolio_Meta_Box {
 			}
 		}
 		update_post_meta( $post_id, StackFolio_Album::META_VIDEOS, implode( "\n", $links ) );
+		StackFolio_Videos::warm( $links );
 
 		$position = isset( $_POST['stackfolio_videos_position'] ) && 'before' === $_POST['stackfolio_videos_position'] ? 'before' : 'after';
 		update_post_meta( $post_id, StackFolio_Album::META_VIDEOS_POSITION, $position );

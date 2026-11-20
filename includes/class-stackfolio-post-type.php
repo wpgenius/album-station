@@ -25,6 +25,47 @@ class StackFolio_Post_Type {
 		add_filter( 'manage_' . self::POST_TYPE . '_posts_columns', array( __CLASS__, 'columns' ) );
 		add_action( 'manage_' . self::POST_TYPE . '_posts_custom_column', array( __CLASS__, 'column_content' ), 10, 2 );
 		add_filter( 'enter_title_here', array( __CLASS__, 'title_placeholder' ), 10, 2 );
+		add_action( 'saved_' . self::TAXONOMY, array( __CLASS__, 'keep_category_top_level' ), 10, 2 );
+		add_action( 'admin_head', array( __CLASS__, 'hide_parent_category_fields' ) );
+	}
+
+	/**
+	 * Album categories are top-level only: the filter bar is one flat row.
+	 * Undo a parent set through any route (admin, REST, import).
+	 *
+	 * @param int $term_id Term ID.
+	 * @param int $tt_id   Term taxonomy ID.
+	 */
+	public static function keep_category_top_level( $term_id, $tt_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- wp_update_term() would fire this hook again.
+		$changed = $wpdb->update(
+			$wpdb->term_taxonomy,
+			array( 'parent' => 0 ),
+			array( 'term_taxonomy_id' => (int) $tt_id ),
+			array( '%d' ),
+			array( '%d' )
+		);
+		if ( $changed ) {
+			clean_term_cache( (int) $term_id, self::TAXONOMY );
+			delete_option( self::TAXONOMY . '_children' );
+		}
+	}
+
+	/**
+	 * Hide the Parent fields for album categories.
+	 */
+	public static function hide_parent_category_fields() {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen ) {
+			return;
+		}
+		if ( self::TAXONOMY === $screen->taxonomy && in_array( $screen->base, array( 'edit-tags', 'term' ), true ) ) {
+			echo '<style>.term-parent-wrap{display:none}</style>';
+		} elseif ( 'post' === $screen->base && self::POST_TYPE === $screen->post_type ) {
+			echo '<style>#new' . esc_attr( self::TAXONOMY ) . '_parent{display:none}</style>';
+		}
 	}
 
 	/**
