@@ -89,13 +89,6 @@
 	display: none;
 }
 
-/* A removed card fading out while the filter animates. */
-.coverfold-item--ghost {
-	position: absolute;
-	margin: 0;
-	pointer-events: none;
-}
-
 /* Card */
 .coverfold-card {
 	position: relative;
@@ -194,37 +187,14 @@
 	}
 }
 
-/* Lightbox */
-.coverfold-lightbox .lg-sub-html h4 {
-	margin: 0 0 0.25em;
-	color: #eee;
-}
-
-.coverfold-lightbox .lg-sub-html p {
-	margin: 0;
-}
-
-.coverfold-lightbox--hide-thumbs-fs .lg-fullscreen-on .lg-components {
-	display: none;
-}
-
-.coverfold-lightbox--hide-thumbs-fs .lg-fullscreen-on .lg-content {
-	top: 0 !important;
-	bottom: 0 !important;
-}
-
-/* Keep the lightbox toolbar clear of the WordPress admin bar. */
-.admin-bar .coverfold-lightbox .lg-outer,
-.admin-bar .coverfold-lightbox .lg-backdrop {
-	top: 32px;
-	bottom: 0;
-	height: auto;
+/* Lightbox: keep the toolbar clear of the WordPress admin bar. */
+.admin-bar .foldbox.coverfold-lightbox {
+	--foldbox-top: 32px;
 }
 
 @media screen and (max-width: 782px) {
 
-	.admin-bar .coverfold-lightbox .lg-outer,
-	.admin-bar .coverfold-lightbox .lg-backdrop {
-		top: 46px;
+	.admin-bar .foldbox.coverfold-lightbox {
+		--foldbox-top: 46px;
 	}
 }

@@ -27,7 +27,7 @@ It suits photographers, studios, agencies, event organisers, schools and anyone 
 
 * **Albums, not single images.** Each album is a stack of photos and videos behind one cover.
 * **Photos and videos together.** Media Library images and MP4/WebM videos, YouTube videos, YouTube playlists and Vimeo videos.
-* **Lightbox** powered by lightGallery, with thumbnails, zoom, fullscreen, slideshow and captions.
+* **Lightbox** powered by Foldbox, with thumbnails, zoom, fullscreen, slideshow, captions, swipe and keyboard support.
 * **Category filters** with smooth animations. Only categories that have albums in the grid are shown.
 * **Gutenberg block** with live preview.
 * **Elementor widget** with full style controls for cards, titles and filter buttons.
@@ -69,10 +69,10 @@ Coverfold is the new name of Album Station. When you activate Coverfold it moves
 
 Coverfold connects to these services only when an album contains the matching video links:
 
-* **YouTube** – Videos play in an embedded YouTube player and thumbnails load from `i.ytimg.com` when a visitor opens an album. For YouTube playlists, your site calls the YouTube Data API (`googleapis.com`) with your API key and the playlist ID to list the videos; results are cached for 12 hours. [YouTube Terms of Service](https://www.youtube.com/t/terms), [Google Privacy Policy](https://policies.google.com/privacy).
-* **Vimeo** – Your site calls Vimeo's oEmbed endpoint (`vimeo.com/api/oembed.json`) with the video URL to get its title and thumbnail; results are cached for 12 hours. Videos play in an embedded Vimeo player when a visitor opens an album. [Vimeo Terms of Service](https://vimeo.com/terms), [Vimeo Privacy Policy](https://vimeo.com/privacy).
+* **YouTube** – Thumbnails load from `i.ytimg.com` when a visitor opens an album, and videos play in an embedded YouTube player (`youtube-nocookie.com`) once the visitor presses play. For YouTube playlists, your site calls the YouTube Data API (`googleapis.com`) with your API key and the playlist ID to list the videos; results are cached for 12 hours. [YouTube Terms of Service](https://www.youtube.com/t/terms), [Google Privacy Policy](https://policies.google.com/privacy).
+* **Vimeo** – Your site calls Vimeo's oEmbed endpoint (`vimeo.com/api/oembed.json`) with the video URL to get its title and thumbnail; results are cached for 12 hours. Videos play in an embedded Vimeo player once the visitor presses play. [Vimeo Terms of Service](https://vimeo.com/terms), [Vimeo Privacy Policy](https://vimeo.com/privacy).
 
-No data about your visitors is sent by the plugin itself. Embedded players are loaded by the visitor's browser only after they open an album.
+No data about your visitors is sent by the plugin itself. Embedded players are loaded by the visitor's browser only after they press play.
 
 == Installation ==
 
@@ -121,8 +121,7 @@ No. Albums are shown only through the block, widget or shortcode. Developers can
 
 == Third-party libraries ==
 
-* [lightGallery](https://github.com/sachinchoolur/lightGallery) 2.9.0 – GPLv3
-* [Vimeo Player API](https://github.com/vimeo/player.js) 2.30.4 – MIT
+* [Foldbox](https://github.com/wpgenius/foldbox) 1.1.1 – MIT
 
 Unminified sources are available at the links above.
 

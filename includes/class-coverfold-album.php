@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Reads album meta and builds the lightGallery item list for an album.
+ * Reads album meta and builds the Foldbox item list for an album.
  */
 class Coverfold_Album {
 
@@ -96,7 +96,7 @@ class Coverfold_Album {
 		/**
 		 * Filters the lightbox items of an album.
 		 *
-		 * @param array[] $items   lightGallery dynamic items.
+		 * @param array[] $items   Foldbox lightbox items.
 		 * @param int     $post_id Album ID.
 		 * @param array   $args    Render arguments.
 		 */
@@ -134,18 +134,17 @@ class Coverfold_Album {
 			$size   = apply_filters( 'coverfold_lightbox_image_size', '2048x2048', $attachment_id );
 			$large  = wp_get_attachment_image_src( $attachment_id, $size );
 			$item   = array(
-				'src'         => $large ? $large[0] : $full[0],
-				'thumb'       => (string) wp_get_attachment_image_url( $attachment_id, 'thumbnail' ),
-				'alt'         => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
-				'downloadUrl' => $full[0],
+				'src'      => $large ? $large[0] : $full[0],
+				'thumb'    => (string) wp_get_attachment_image_url( $attachment_id, 'thumbnail' ),
+				'alt'      => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
+				'download' => $full[0],
 			);
 			$srcset = wp_get_attachment_image_srcset( $attachment_id, $size );
 			if ( $srcset ) {
 				$item['srcset'] = $srcset;
-				$item['sizes']  = '100vw';
 			}
 			if ( $caption ) {
-				$item['subHtml'] = $caption;
+				$item['caption'] = $caption;
 			}
 			return $item;
 		}
@@ -156,26 +155,20 @@ class Coverfold_Album {
 			// video never looks like a copy of the album cover.
 			$poster = get_the_post_thumbnail_url( $attachment_id, 'large' );
 			$item   = array(
-				'video' => array(
-					'source'     => array(
-						array(
-							'src'  => wp_get_attachment_url( $attachment_id ),
-							'type' => $mime,
-						),
-					),
-					'attributes' => array(
-						'preload'     => 'metadata',
-						'controls'    => true,
-						'playsinline' => true,
+				'type'    => 'video',
+				'sources' => array(
+					array(
+						'src'  => wp_get_attachment_url( $attachment_id ),
+						'type' => $mime,
 					),
 				),
-				'thumb' => $poster ? $poster : COVERFOLD_URL . 'assets/images/video-thumb.svg',
+				'thumb'   => $poster ? $poster : COVERFOLD_URL . 'assets/images/video-thumb.svg',
 			);
 			if ( $poster ) {
 				$item['poster'] = $poster;
 			}
 			if ( $caption ) {
-				$item['subHtml'] = $caption;
+				$item['caption'] = $caption;
 			}
 			return $item;
 		}

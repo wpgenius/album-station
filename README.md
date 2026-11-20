@@ -4,7 +4,7 @@
 
 [![Try it in your browser](https://img.shields.io/badge/WordPress_Playground-Try_it_in_your_browser-3858e9?logo=wordpress)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/wpgenius/coverfold/main/.wordpress-org/blueprints/blueprint.json)
 
-Coverfold shows a filterable grid of album covers. Click a cover and the whole album (photos, Media Library videos, YouTube, YouTube playlists and Vimeo) opens in a lightGallery popup. Use it as a Gutenberg block, an Elementor widget or the `[coverfold]` shortcode.
+Coverfold shows a filterable grid of album covers. Click a cover and the whole album (photos, Media Library videos, YouTube, YouTube playlists and Vimeo) opens in a [Foldbox](https://github.com/wpgenius/foldbox) lightbox. Use it as a Gutenberg block, an Elementor widget or the `[coverfold]` shortcode.
 
 Coverfold is the successor of Album Station and migrates its albums automatically.
 
@@ -22,7 +22,7 @@ Coverfold is the successor of Album Station and migrates its albums automaticall
 | `includes/elementor/` | Elementor widget (+ hidden Album Station compatibility widget) |
 | `includes/class-coverfold-shortcode.php` | `[coverfold]` and legacy `[feature_album]` |
 | `includes/class-coverfold-migration.php` | One-time Album Station migration |
-| `assets/vendor/` | lightGallery 2.9.0 (GPLv3), Vimeo Player API 2.30.4 (MIT) |
+| `assets/vendor/` | Foldbox 1.1.1 (MIT): lightbox and animated filter |
 
 ## Try it in your browser
 
