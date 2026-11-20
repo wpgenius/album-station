@@ -20,7 +20,13 @@
 		}
 	}
 
+	// Only one lightbox at a time, so a double-click doesn't open two.
+	let isOpen = false;
+
 	function openAlbum( card ) {
+		if ( isOpen ) {
+			return;
+		}
 		const root = card.closest( '.stackfolio' );
 		const config = root ? getConfig( root ) : {};
 		let items;
@@ -67,13 +73,20 @@
 			},
 		} );
 
+		isOpen = true;
 		card.addEventListener( 'lgAfterClose', function onClose() {
 			card.removeEventListener( 'lgAfterClose', onClose );
 			gallery.destroy();
+			isOpen = false;
 			card.focus();
 		} );
 
-		gallery.openGallery( 0 );
+		try {
+			gallery.openGallery( 0 );
+		} catch ( error ) {
+			isOpen = false;
+			throw error;
+		}
 	}
 
 	function setActive( buttons, active ) {

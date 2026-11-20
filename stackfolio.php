@@ -36,6 +36,7 @@ require_once STACKFOLIO_PATH . 'includes/elementor/class-stackfolio-elementor.ph
 
 StackFolio_Post_Type::init();
 StackFolio_Settings::init();
+StackFolio_Videos::init();
 StackFolio_Meta_Box::init();
 StackFolio_Assets::init();
 StackFolio_Shortcode::init();

@@ -10,6 +10,7 @@ require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'HOUR_IN_SECONDS', 3600 );
+define( 'DAY_IN_SECONDS', 86400 );
 define( 'STACKFOLIO_VERSION', '0.0.0-test' );
 define( 'STACKFOLIO_FILE', dirname( __DIR__ ) . '/stackfolio.php' );
 define( 'STACKFOLIO_PATH', dirname( __DIR__ ) . '/' );

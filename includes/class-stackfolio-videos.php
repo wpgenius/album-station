@@ -14,6 +14,101 @@ class StackFolio_Videos {
 
 	const CACHE_TTL       = 12 * HOUR_IN_SECONDS;
 	const ERROR_CACHE_TTL = HOUR_IN_SECONDS;
+	// Old data is kept this long and shown while a fresh copy is fetched in the background.
+	const STALE_TTL    = 30 * DAY_IN_SECONDS;
+	const REFRESH_HOOK = 'stackfolio_refresh_video_data';
+
+	/**
+	 * Hook everything up.
+	 */
+	public static function init() {
+		add_action( self::REFRESH_HOOK, array( __CLASS__, 'refresh' ), 10, 2 );
+	}
+
+	/**
+	 * Background refresh of one cached entry (WP-Cron).
+	 *
+	 * @param string $type playlist|vimeo.
+	 * @param string $id   Playlist ID or Vimeo URL.
+	 */
+	public static function refresh( $type, $id ) {
+		if ( 'playlist' === $type ) {
+			self::playlist_videos( (string) $id, true );
+		} elseif ( 'vimeo' === $type ) {
+			self::vimeo_data( (string) $id, true );
+		}
+	}
+
+	/**
+	 * Fetch any missing remote data for these links now, e.g. when an album is
+	 * saved, so visitors don't wait for it.
+	 *
+	 * @param string[] $links Video links.
+	 */
+	public static function warm( array $links ) {
+		self::to_items( $links );
+	}
+
+	/**
+	 * Read a cached entry. Expired entries are still returned, and a background
+	 * refresh is scheduled.
+	 *
+	 * @param string $cache_key Transient key.
+	 * @param string $type      playlist|vimeo.
+	 * @param string $id        Playlist ID or Vimeo URL.
+	 * @return array|null Cached data, or null when there is none.
+	 */
+	private static function cached( $cache_key, $type, $id ) {
+		$entry = get_transient( $cache_key );
+		if ( ! is_array( $entry ) || ! isset( $entry['data'], $entry['fresh_until'] ) || ! is_array( $entry['data'] ) ) {
+			return null;
+		}
+		if ( (int) $entry['fresh_until'] < time() && ! wp_next_scheduled( self::REFRESH_HOOK, array( $type, $id ) ) ) {
+			wp_schedule_single_event( time(), self::REFRESH_HOOK, array( $type, $id ) );
+		}
+		return $entry['data'];
+	}
+
+	/**
+	 * Store remote data. A failed fetch keeps the previous data, if any.
+	 *
+	 * @param string     $cache_key Transient key.
+	 * @param array|null $data      Fetched data, or null when the request failed.
+	 * @param array      $fallback  Data to use when nothing was ever fetched.
+	 * @return array Data to use now.
+	 */
+	private static function store( $cache_key, $data, array $fallback ) {
+		if ( null === $data ) {
+			$entry = get_transient( $cache_key );
+			$data  = ( is_array( $entry ) && isset( $entry['data'] ) && is_array( $entry['data'] ) ) ? $entry['data'] : $fallback;
+			$ttl   = self::ERROR_CACHE_TTL;
+		} else {
+			$ttl = self::CACHE_TTL;
+		}
+		set_transient(
+			$cache_key,
+			array(
+				'data'        => $data,
+				'fresh_until' => time() + $ttl,
+			),
+			self::STALE_TTL
+		);
+		return $data;
+	}
+
+	/**
+	 * Timeout for remote video requests.
+	 *
+	 * @return int Seconds.
+	 */
+	private static function timeout() {
+		/**
+		 * Filters the timeout of Vimeo and YouTube requests, in seconds.
+		 *
+		 * @param int $timeout Seconds.
+		 */
+		return max( 1, (int) apply_filters( 'stackfolio_remote_timeout', 3 ) );
+	}
 
 	/**
 	 * Work out what a single line of the "Video links" field points to.
@@ -150,7 +245,7 @@ class StackFolio_Videos {
 					$data    = self::vimeo_data( $video['url'] );
 					$items[] = array(
 						'src'     => $video['url'],
-						'thumb'   => $data['thumb'],
+						'thumb'   => $data['thumb'] ? $data['thumb'] : STACKFOLIO_URL . 'assets/images/video-thumb.svg',
 						'subHtml' => $data['title'] ? '<h4>' . esc_html( $data['title'] ) . '</h4>' : '',
 					);
 					break;
@@ -173,17 +268,18 @@ class StackFolio_Videos {
 	 * Videos of a YouTube playlist (cached). Needs the API key from settings.
 	 *
 	 * @param string $playlist_id Playlist ID.
+	 * @param bool   $force       Skip the cache and fetch now.
 	 * @return array[] Each { id, title, thumb }.
 	 */
-	public static function playlist_videos( $playlist_id ) {
+	public static function playlist_videos( $playlist_id, $force = false ) {
 		$api_key = StackFolio_Settings::get( 'youtube_api_key' );
 		if ( '' === $api_key ) {
 			return array();
 		}
 
 		$cache_key = self::cache_key( 'yt_pl_' . $playlist_id );
-		$cached    = get_transient( $cache_key );
-		if ( is_array( $cached ) ) {
+		$cached    = $force ? null : self::cached( $cache_key, 'playlist', $playlist_id );
+		if ( null !== $cached ) {
 			return $cached;
 		}
 
@@ -205,11 +301,12 @@ class StackFolio_Videos {
 			'https://www.googleapis.com/youtube/v3/playlistItems'
 		);
 
-		$response = wp_remote_get( $url, array( 'timeout' => 10 ) );
-		$videos   = array();
+		$response = wp_remote_get( $url, array( 'timeout' => self::timeout() ) );
+		$videos   = null;
 
 		if ( ! is_wp_error( $response ) && 200 === (int) wp_remote_retrieve_response_code( $response ) ) {
-			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+			$body   = json_decode( wp_remote_retrieve_body( $response ), true );
+			$videos = array();
 			if ( ! empty( $body['items'] ) && is_array( $body['items'] ) ) {
 				foreach ( $body['items'] as $item ) {
 					$snippet = isset( $item['snippet'] ) ? $item['snippet'] : array();
@@ -224,31 +321,30 @@ class StackFolio_Videos {
 					);
 				}
 			}
-			set_transient( $cache_key, $videos, self::CACHE_TTL );
-		} else {
-			set_transient( $cache_key, $videos, self::ERROR_CACHE_TTL );
 		}
 
-		return $videos;
+		return self::store( $cache_key, $videos, array() );
 	}
 
 	/**
 	 * Vimeo title and thumbnail via oEmbed (cached).
 	 *
-	 * @param string $url Vimeo URL.
+	 * @param string $url   Vimeo URL.
+	 * @param bool   $force Skip the cache and fetch now.
 	 * @return array { title, thumb }
 	 */
-	public static function vimeo_data( $url ) {
+	public static function vimeo_data( $url, $force = false ) {
 		$cache_key = self::cache_key( 'vimeo_' . md5( $url ) );
-		$cached    = get_transient( $cache_key );
-		if ( is_array( $cached ) ) {
+		$cached    = $force ? null : self::cached( $cache_key, 'vimeo', $url );
+		if ( null !== $cached ) {
 			return $cached;
 		}
 
-		$data     = array(
+		$empty    = array(
 			'title' => '',
 			'thumb' => '',
 		);
+		$data     = null;
 		$response = wp_remote_get(
 			add_query_arg(
 				array(
@@ -257,21 +353,19 @@ class StackFolio_Videos {
 				),
 				'https://vimeo.com/api/oembed.json'
 			),
-			array( 'timeout' => 10 )
+			array( 'timeout' => self::timeout() )
 		);
 
 		if ( ! is_wp_error( $response ) && 200 === (int) wp_remote_retrieve_response_code( $response ) ) {
 			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+			$data = $empty;
 			if ( is_array( $body ) ) {
 				$data['title'] = isset( $body['title'] ) ? sanitize_text_field( $body['title'] ) : '';
 				$data['thumb'] = isset( $body['thumbnail_url'] ) ? esc_url_raw( $body['thumbnail_url'] ) : '';
 			}
-			set_transient( $cache_key, $data, self::CACHE_TTL );
-		} else {
-			set_transient( $cache_key, $data, self::ERROR_CACHE_TTL );
 		}
 
-		return $data;
+		return self::store( $cache_key, $data, $empty );
 	}
 
 	/**
@@ -282,7 +376,8 @@ class StackFolio_Videos {
 	 */
 	private static function cache_key( $key ) {
 		$version = (int) get_option( 'stackfolio_cache_version', 1 );
-		return 'stackfolio_' . $version . '_' . md5( $key );
+		// "v2": entries now hold { data, fresh_until }.
+		return 'stackfolio_' . $version . '_' . md5( 'v2_' . $key );
 	}
 
 	/**
