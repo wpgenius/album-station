@@ -8,26 +8,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers the lightbox and the Coverfold front-end files.
+ * Registers Foldbox and the Coverfold front-end files.
  * They are enqueued only where a grid is rendered.
  */
 class Coverfold_Assets {
 
-	const LIGHTGALLERY_VERSION = '2.9.0';
-	const VIMEO_PLAYER_VERSION = '2.30.4';
-
-	/**
-	 * Lightbox plugin handles keyed by Coverfold feature name.
-	 *
-	 * @var string[]
-	 */
-	const LG_PLUGINS = array(
-		'video'      => 'lg-video',
-		'thumbnail'  => 'lg-thumbnail',
-		'zoom'       => 'lg-zoom',
-		'fullscreen' => 'lg-fullscreen',
-		'autoplay'   => 'lg-autoplay',
-	);
+	const FOLDBOX_VERSION = '1.1.1';
 
 	/**
 	 * Hook everything up.
@@ -40,35 +26,39 @@ class Coverfold_Assets {
 	 * Register all handles.
 	 */
 	public static function register() {
-		$vendor = COVERFOLD_URL . 'assets/vendor/';
+		$vendor = COVERFOLD_URL . 'assets/vendor/foldbox/';
 
-		wp_register_style( 'coverfold-lightgallery', $vendor . 'lightgallery/css/lightgallery-bundle.min.css', array(), self::LIGHTGALLERY_VERSION );
-		wp_register_style( 'coverfold', COVERFOLD_URL . 'assets/css/coverfold.css', array( 'coverfold-lightgallery' ), COVERFOLD_VERSION );
+		wp_register_style( 'coverfold-foldbox', $vendor . 'foldbox.min.css', array(), self::FOLDBOX_VERSION );
+		wp_register_style( 'coverfold', COVERFOLD_URL . 'assets/css/coverfold.css', array( 'coverfold-foldbox' ), COVERFOLD_VERSION );
 
 		$strategy = array(
 			'in_footer' => true,
 			'strategy'  => 'defer',
 		);
 
-		wp_register_script( 'coverfold-lightgallery', $vendor . 'lightgallery/lightgallery.min.js', array(), self::LIGHTGALLERY_VERSION, $strategy );
-
-		// lightGallery's video plugin uses the Vimeo Player API to pause and play Vimeo videos.
-		wp_register_script( 'coverfold-vimeo-player', $vendor . 'vimeo-player/player.min.js', array(), self::VIMEO_PLAYER_VERSION, $strategy );
-
-		$deps = array( 'coverfold-lightgallery' );
-		foreach ( self::LG_PLUGINS as $file ) {
-			$handle      = 'coverfold-' . $file;
-			$plugin_deps = 'lg-video' === $file ? array( 'coverfold-lightgallery', 'coverfold-vimeo-player' ) : array( 'coverfold-lightgallery' );
-			wp_register_script( $handle, $vendor . 'lightgallery/plugins/' . $file . '.min.js', $plugin_deps, self::LIGHTGALLERY_VERSION, $strategy );
-			$deps[] = $handle;
-		}
-
-		wp_register_script( 'coverfold', COVERFOLD_URL . 'assets/js/coverfold.js', $deps, COVERFOLD_VERSION, $strategy );
+		wp_register_script( 'coverfold-foldbox', $vendor . 'foldbox.min.js', array(), self::FOLDBOX_VERSION, $strategy );
+		wp_register_script( 'coverfold', COVERFOLD_URL . 'assets/js/coverfold.js', array( 'coverfold-foldbox' ), COVERFOLD_VERSION, $strategy );
 		wp_localize_script(
 			'coverfold',
 			'coverfoldL10n',
 			array(
-				'openAlbum' => __( 'Open album', 'coverfold' ),
+				'labels' => array(
+					'dialog'         => __( 'Album', 'coverfold' ),
+					'close'          => __( 'Close', 'coverfold' ),
+					'prev'           => __( 'Previous', 'coverfold' ),
+					'next'           => __( 'Next', 'coverfold' ),
+					'zoomIn'         => __( 'Zoom in', 'coverfold' ),
+					'zoomOut'        => __( 'Zoom out', 'coverfold' ),
+					'fullscreen'     => __( 'Fullscreen', 'coverfold' ),
+					'exitFullscreen' => __( 'Exit fullscreen', 'coverfold' ),
+					'play'           => __( 'Start slideshow', 'coverfold' ),
+					'pause'          => __( 'Pause slideshow', 'coverfold' ),
+					'download'       => __( 'Download', 'coverfold' ),
+					'playVideo'      => __( 'Play video', 'coverfold' ),
+					/* translators: %1: current item number, %2: number of items. Keep %1 and %2 as they are. */
+					'counter'        => __( '%1 / %2', 'coverfold' ),
+					'error'          => __( 'This item could not be loaded.', 'coverfold' ),
+				),
 			)
 		);
 	}

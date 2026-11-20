@@ -8,7 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Turns YouTube / YouTube playlist / Vimeo links into lightGallery items.
+ * Turns YouTube / YouTube playlist / Vimeo links into Foldbox lightbox items.
  */
 class Coverfold_Videos {
 
@@ -211,7 +211,7 @@ class Coverfold_Videos {
 	}
 
 	/**
-	 * Convert video links into lightGallery dynamic items.
+	 * Convert video links into Foldbox lightbox items.
 	 *
 	 * @param string[] $links Links, one per entry.
 	 * @return array[]
@@ -236,7 +236,7 @@ class Coverfold_Videos {
 						$items[] = array(
 							'src'     => 'https://www.youtube.com/watch?v=' . $entry['id'],
 							'thumb'   => $entry['thumb'] ? $entry['thumb'] : self::youtube_thumb( $entry['id'] ),
-							'subHtml' => $entry['title'] ? '<h4>' . esc_html( $entry['title'] ) . '</h4>' : '',
+							'caption' => $entry['title'] ? '<h4>' . esc_html( $entry['title'] ) . '</h4>' : '',
 						);
 					}
 					break;
@@ -246,7 +246,7 @@ class Coverfold_Videos {
 					$items[] = array(
 						'src'     => $video['url'],
 						'thumb'   => $data['thumb'] ? $data['thumb'] : COVERFOLD_URL . 'assets/images/video-thumb.svg',
-						'subHtml' => $data['title'] ? '<h4>' . esc_html( $data['title'] ) . '</h4>' : '',
+						'caption' => $data['title'] ? '<h4>' . esc_html( $data['title'] ) . '</h4>' : '',
 					);
 					break;
 			}

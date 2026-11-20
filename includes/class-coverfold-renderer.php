@@ -194,11 +194,16 @@ class Coverfold_Renderer {
 			$cards[] = self::render_card( $album, $terms, $args );
 		}
 
+		// Foldbox lightbox options.
 		$config = array(
-			'plugins'              => self::lightbox_plugins( $args ),
-			'slideshowAutostart'   => $args['slideshow'] && $args['slideshow_autostart'],
-			'download'             => $args['download'],
-			'hideThumbsFullscreen' => $args['thumbnails'] && $args['hide_thumbs_fullscreen'],
+			'captions'               => $args['captions'],
+			'thumbnails'             => $args['thumbnails'],
+			'hideThumbsInFullscreen' => $args['thumbnails'] && $args['hide_thumbs_fullscreen'],
+			'zoom'                   => $args['zoom'],
+			'fullscreen'             => $args['fullscreen'],
+			'slideshow'              => $args['slideshow'],
+			'slideshowAutostart'     => $args['slideshow'] && $args['slideshow_autostart'],
+			'download'               => $args['download'],
 		);
 
 		$classes = array(
@@ -235,28 +240,6 @@ class Coverfold_Renderer {
 		 * @param WP_Post[] $albums Albums shown.
 		 */
 		return apply_filters( 'coverfold_grid_html', $html, $args, $albums );
-	}
-
-	/**
-	 * Lightbox plugin names for the front-end script.
-	 *
-	 * @param array $args Normalized arguments.
-	 * @return string[]
-	 */
-	private static function lightbox_plugins( array $args ) {
-		$plugins = array();
-		foreach ( array(
-			'videos'     => 'video',
-			'thumbnails' => 'thumbnail',
-			'zoom'       => 'zoom',
-			'fullscreen' => 'fullscreen',
-			'slideshow'  => 'autoplay',
-		) as $arg => $plugin ) {
-			if ( $args[ $arg ] ) {
-				$plugins[] = $plugin;
-			}
-		}
-		return $plugins;
 	}
 
 	/**
