@@ -4,7 +4,7 @@ Tags: gallery, album, portfolio, lightbox, video gallery
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,15 @@ No. Albums are shown only through the block, widget or shortcode. Developers can
 Unminified sources are available at the links above.
 
 == Changelog ==
+
+= 1.0.5 =
+
+* Album pages go empty if the plugin is activated while Album Station is still active (#43)
+* Pages can load slowly when cached Vimeo and YouTube playlist data expires (#44)
+* The lightbox loads full-size original images (#45)
+* A fast double-click opens two lightboxes (#46)
+* Vimeo video thumbnail is blank when Vimeo does not answer (#47)
+* Album categories should be top-level only (#48)
 
 = 1.0.4 =
 
