@@ -2,10 +2,10 @@
 /**
  * Base test case: sets up and tears down Brain Monkey for each test.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
-namespace StackFolio\Tests;
+namespace Coverfold\Tests;
 
 use Brain\Monkey;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;

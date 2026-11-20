@@ -1,9 +1,9 @@
 <?php
 /**
  * Minimal Elementor stubs for PHPStan (Elementor is not installed in CI).
- * Only the classes, constants and methods StackFolio uses.
+ * Only the classes, constants and methods Coverfold uses.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 // phpcs:disable

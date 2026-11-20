@@ -2,7 +2,7 @@
 /**
  * Album data access.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,11 +10,11 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Reads album meta and builds the lightGallery item list for an album.
  */
-class StackFolio_Album {
+class Coverfold_Album {
 
-	const META_MEDIA           = '_stackfolio_media';
-	const META_VIDEOS          = '_stackfolio_video_links';
-	const META_VIDEOS_POSITION = '_stackfolio_videos_position';
+	const META_MEDIA           = '_coverfold_media';
+	const META_VIDEOS          = '_coverfold_video_links';
+	const META_VIDEOS_POSITION = '_coverfold_videos_position';
 
 	/**
 	 * Attachment IDs (images and videos) in album order.
@@ -87,7 +87,7 @@ class StackFolio_Album {
 			}
 		}
 
-		$linked = $args['videos'] ? StackFolio_Videos::to_items( self::get_video_links( $post_id ) ) : array();
+		$linked = $args['videos'] ? Coverfold_Videos::to_items( self::get_video_links( $post_id ) ) : array();
 
 		$items = 'before' === self::get_videos_position( $post_id )
 			? array_merge( $linked, $media )
@@ -100,7 +100,7 @@ class StackFolio_Album {
 		 * @param int     $post_id Album ID.
 		 * @param array   $args    Render arguments.
 		 */
-		return apply_filters( 'stackfolio_album_items', $items, $post_id, $args );
+		return apply_filters( 'coverfold_album_items', $items, $post_id, $args );
 	}
 
 	/**
@@ -131,7 +131,7 @@ class StackFolio_Album {
 			 * @param string $size          Image size name.
 			 * @param int    $attachment_id Attachment ID.
 			 */
-			$size   = apply_filters( 'stackfolio_lightbox_image_size', '2048x2048', $attachment_id );
+			$size   = apply_filters( 'coverfold_lightbox_image_size', '2048x2048', $attachment_id );
 			$large  = wp_get_attachment_image_src( $attachment_id, $size );
 			$item   = array(
 				'src'         => $large ? $large[0] : $full[0],
@@ -169,7 +169,7 @@ class StackFolio_Album {
 						'playsinline' => true,
 					),
 				),
-				'thumb' => $poster ? $poster : STACKFOLIO_URL . 'assets/images/video-thumb.svg',
+				'thumb' => $poster ? $poster : COVERFOLD_URL . 'assets/images/video-thumb.svg',
 			);
 			if ( $poster ) {
 				$item['poster'] = $poster;

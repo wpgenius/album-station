@@ -1,15 +1,15 @@
 <?php
 /**
- * Tests for the remote video data cache in includes/class-stackfolio-videos.php.
+ * Tests for the remote video data cache in includes/class-coverfold-videos.php.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
-namespace StackFolio\Tests\Unit;
+namespace Coverfold\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use StackFolio\Tests\TestCase;
-use StackFolio_Videos;
+use Coverfold\Tests\TestCase;
+use Coverfold_Videos;
 
 /**
  * Vimeo data cache tests.
@@ -62,7 +62,7 @@ class VideoCacheTest extends TestCase {
 		Functions\expect( 'wp_remote_get' )->never();
 		Functions\expect( 'wp_schedule_single_event' )->never();
 
-		$this->assertSame( 'Cached', StackFolio_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
+		$this->assertSame( 'Cached', Coverfold_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
 	}
 
 	public function test_expired_cache_is_served_and_refreshed_in_background() {
@@ -79,7 +79,7 @@ class VideoCacheTest extends TestCase {
 		Functions\expect( 'wp_remote_get' )->never();
 		Functions\expect( 'wp_schedule_single_event' )->once();
 
-		$this->assertSame( 'Old', StackFolio_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
+		$this->assertSame( 'Old', Coverfold_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
 	}
 
 	public function test_missing_cache_is_fetched_with_a_short_timeout() {
@@ -92,7 +92,7 @@ class VideoCacheTest extends TestCase {
 		);
 		$this->vimeo_ok();
 
-		$this->assertSame( 'New', StackFolio_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
+		$this->assertSame( 'New', Coverfold_Videos::vimeo_data( 'https://vimeo.com/1' )['title'] );
 		$entry = reset( $this->saved );
 		$this->assertSame( 'New', $entry['data']['title'] );
 		$this->assertGreaterThan( time() + 11 * 3600, $entry['fresh_until'] );
@@ -111,7 +111,7 @@ class VideoCacheTest extends TestCase {
 		Functions\when( 'wp_remote_get' )->justReturn( array() );
 		$this->vimeo_down();
 
-		$this->assertSame( 'Old', StackFolio_Videos::vimeo_data( 'https://vimeo.com/1', true )['title'] );
+		$this->assertSame( 'Old', Coverfold_Videos::vimeo_data( 'https://vimeo.com/1', true )['title'] );
 		$entry = reset( $this->saved );
 		$this->assertSame( 'Old', $entry['data']['title'] );
 		$this->assertLessThanOrEqual( time() + 3600, $entry['fresh_until'] );
@@ -123,8 +123,8 @@ class VideoCacheTest extends TestCase {
 		Functions\when( 'wp_remote_get' )->justReturn( array() );
 		$this->vimeo_down();
 
-		$items = StackFolio_Videos::to_items( array( 'https://vimeo.com/76979871' ) );
+		$items = Coverfold_Videos::to_items( array( 'https://vimeo.com/76979871' ) );
 
-		$this->assertSame( STACKFOLIO_URL . 'assets/images/video-thumb.svg', $items[0]['thumb'] );
+		$this->assertSame( COVERFOLD_URL . 'assets/images/video-thumb.svg', $items[0]['thumb'] );
 	}
 }

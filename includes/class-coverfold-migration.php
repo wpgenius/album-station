@@ -2,23 +2,23 @@
 /**
  * One-time migration from Album Station.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Moves Album Station albums, categories and settings into StackFolio.
+ * Moves Album Station albums, categories and settings into Coverfold.
  *
  * Only posts of type `album` that carry Album Station meta are moved, so an
  * unrelated `album` post type from another plugin is left alone. Old meta is
  * kept, nothing is deleted.
  */
-class StackFolio_Migration {
+class Coverfold_Migration {
 
 	const DB_VERSION       = 2;
-	const VERSION_OPTION   = 'stackfolio_db_version';
-	const NOTICE_OPTION    = 'stackfolio_migration_notice';
+	const VERSION_OPTION   = 'coverfold_db_version';
+	const NOTICE_OPTION    = 'coverfold_migration_notice';
 	const LEGACY_POST_TYPE = 'album';
 	const LEGACY_TAXONOMY  = 'album_category';
 	// Not `video_popup`: Album Station saved it on every post of every type.
@@ -104,7 +104,7 @@ class StackFolio_Migration {
 		$term_ids = $wpdb->get_col(
 			$wpdb->prepare(
 				"SELECT term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy = %s AND parent <> 0",
-				StackFolio_Post_Type::TAXONOMY
+				Coverfold_Post_Type::TAXONOMY
 			)
 		);
 		if ( ! $term_ids ) {
@@ -113,13 +113,13 @@ class StackFolio_Migration {
 		$wpdb->query(
 			$wpdb->prepare(
 				"UPDATE {$wpdb->term_taxonomy} SET parent = 0 WHERE taxonomy = %s AND parent <> 0",
-				StackFolio_Post_Type::TAXONOMY
+				Coverfold_Post_Type::TAXONOMY
 			)
 		);
 		// phpcs:enable
 
-		clean_term_cache( array_map( 'intval', $term_ids ), StackFolio_Post_Type::TAXONOMY );
-		delete_option( StackFolio_Post_Type::TAXONOMY . '_children' );
+		clean_term_cache( array_map( 'intval', $term_ids ), Coverfold_Post_Type::TAXONOMY );
+		delete_option( Coverfold_Post_Type::TAXONOMY . '_children' );
 	}
 
 	/**
@@ -159,7 +159,7 @@ class StackFolio_Migration {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Changing a post type has no API that skips hooks and revisions.
 			$wpdb->update(
 				$wpdb->posts,
-				array( 'post_type' => StackFolio_Post_Type::POST_TYPE ),
+				array( 'post_type' => Coverfold_Post_Type::POST_TYPE ),
 				array(
 					'ID'        => $id,
 					'post_type' => self::LEGACY_POST_TYPE,
@@ -184,17 +184,17 @@ class StackFolio_Migration {
 	}
 
 	/**
-	 * Copy Album Station meta to StackFolio meta (only where not set yet).
+	 * Copy Album Station meta to Coverfold meta (only where not set yet).
 	 *
 	 * @param int $id Album ID.
 	 */
 	private static function migrate_meta( $id ) {
-		if ( ! metadata_exists( 'post', $id, StackFolio_Album::META_MEDIA ) ) {
-			$images = StackFolio_Album::parse_ids( (string) get_post_meta( $id, 'image_post_meta_value', true ) );
-			update_post_meta( $id, StackFolio_Album::META_MEDIA, implode( ',', $images ) );
+		if ( ! metadata_exists( 'post', $id, Coverfold_Album::META_MEDIA ) ) {
+			$images = Coverfold_Album::parse_ids( (string) get_post_meta( $id, 'image_post_meta_value', true ) );
+			update_post_meta( $id, Coverfold_Album::META_MEDIA, implode( ',', $images ) );
 		}
 
-		if ( metadata_exists( 'post', $id, StackFolio_Album::META_VIDEOS ) ) {
+		if ( metadata_exists( 'post', $id, Coverfold_Album::META_VIDEOS ) ) {
 			return;
 		}
 
@@ -203,7 +203,7 @@ class StackFolio_Migration {
 
 		if ( 'playlist' === $choice ) {
 			foreach ( self::split( get_post_meta( $id, 'playlist_id', true ) ) as $playlist ) {
-				$parsed = StackFolio_Videos::parse( $playlist );
+				$parsed = Coverfold_Videos::parse( $playlist );
 				if ( $parsed ) {
 					$links[] = $parsed['url'];
 				} elseif ( preg_match( '#^https?://#i', $playlist ) ) {
@@ -218,13 +218,13 @@ class StackFolio_Migration {
 				self::split( get_post_meta( $id, 'vimeo_video_post_meta_value', true ) )
 			);
 			foreach ( $values as $value ) {
-				$parsed  = StackFolio_Videos::parse( $value );
+				$parsed  = Coverfold_Videos::parse( $value );
 				$links[] = $parsed ? $parsed['url'] : $value;
 			}
 		}
 
-		update_post_meta( $id, StackFolio_Album::META_VIDEOS, implode( "\n", array_unique( $links ) ) );
-		update_post_meta( $id, StackFolio_Album::META_VIDEOS_POSITION, 'playlist' === $choice ? 'before' : 'after' );
+		update_post_meta( $id, Coverfold_Album::META_VIDEOS, implode( "\n", array_unique( $links ) ) );
+		update_post_meta( $id, Coverfold_Album::META_VIDEOS_POSITION, 'playlist' === $choice ? 'before' : 'after' );
 	}
 
 	/**
@@ -238,11 +238,11 @@ class StackFolio_Migration {
 	}
 
 	/**
-	 * Move the album_category terms of the migrated albums to stackfolio_category.
+	 * Move the album_category terms of the migrated albums to coverfold_category.
 	 *
 	 * A term used only by migrated albums is moved as it is. A term that other
 	 * content still uses stays in album_category, and the migrated albums get a
-	 * copy of it in stackfolio_category instead. Terms no migrated album uses are
+	 * copy of it in coverfold_category instead. Terms no migrated album uses are
 	 * left alone. Moved terms become top-level. Plain SQL, because album_category is usually no longer
 	 * registered once Album Station is deactivated.
 	 *
@@ -285,7 +285,7 @@ class StackFolio_Migration {
 				$wpdb->update(
 					$wpdb->term_taxonomy,
 					array(
-						'taxonomy' => StackFolio_Post_Type::TAXONOMY,
+						'taxonomy' => Coverfold_Post_Type::TAXONOMY,
 						'parent'   => 0,
 					),
 					array( 'term_taxonomy_id' => $ttid ),
@@ -314,7 +314,7 @@ class StackFolio_Migration {
 				$wpdb->term_taxonomy,
 				array(
 					'term_id'     => $copy_id,
-					'taxonomy'    => StackFolio_Post_Type::TAXONOMY,
+					'taxonomy'    => Coverfold_Post_Type::TAXONOMY,
 					'description' => (string) $row->description,
 					'parent'      => 0,
 					'count'       => 0,
@@ -338,17 +338,17 @@ class StackFolio_Migration {
 			$wpdb->prepare(
 				"UPDATE {$wpdb->term_taxonomy} SET count = ( SELECT COUNT(*) FROM {$wpdb->term_relationships} WHERE {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id ) WHERE taxonomy IN ( %s, %s )",
 				self::LEGACY_TAXONOMY,
-				StackFolio_Post_Type::TAXONOMY
+				Coverfold_Post_Type::TAXONOMY
 			)
 		);
 		// phpcs:enable
 
 		$touched = array_values( array_unique( $touched ) );
 		clean_term_cache( $touched, self::LEGACY_TAXONOMY );
-		clean_term_cache( $touched, StackFolio_Post_Type::TAXONOMY );
-		clean_object_term_cache( $album_ids, StackFolio_Post_Type::POST_TYPE );
+		clean_term_cache( $touched, Coverfold_Post_Type::TAXONOMY );
+		clean_object_term_cache( $album_ids, Coverfold_Post_Type::POST_TYPE );
 		delete_option( self::LEGACY_TAXONOMY . '_children' );
-		delete_option( StackFolio_Post_Type::TAXONOMY . '_children' );
+		delete_option( Coverfold_Post_Type::TAXONOMY . '_children' );
 	}
 
 	/**
@@ -356,13 +356,13 @@ class StackFolio_Migration {
 	 */
 	private static function migrate_settings() {
 		$legacy_key = get_option( self::LEGACY_API_OPTION, '' );
-		if ( '' === $legacy_key || '' !== StackFolio_Settings::get( 'youtube_api_key' ) ) {
+		if ( '' === $legacy_key || '' !== Coverfold_Settings::get( 'youtube_api_key' ) ) {
 			return;
 		}
-		$options                    = get_option( StackFolio_Settings::OPTION, array() );
+		$options                    = get_option( Coverfold_Settings::OPTION, array() );
 		$options                    = is_array( $options ) ? $options : array();
 		$options['youtube_api_key'] = sanitize_text_field( $legacy_key );
-		update_option( StackFolio_Settings::OPTION, $options );
+		update_option( Coverfold_Settings::OPTION, $options );
 	}
 
 	/**
@@ -387,22 +387,22 @@ class StackFolio_Migration {
 			$message = sprintf(
 				/* translators: %d: number of albums. */
 				_n(
-					'Album Station is still active. Deactivate it to finish switching to StackFolio: your %d album moves over automatically.',
-					'Album Station is still active. Deactivate it to finish switching to StackFolio: your %d albums move over automatically.',
+					'Album Station is still active. Deactivate it to finish switching to Coverfold: your %d album moves over automatically.',
+					'Album Station is still active. Deactivate it to finish switching to Coverfold: your %d albums move over automatically.',
 					$count,
-					'stackfolio'
+					'coverfold'
 				),
 				$count
 			);
 		} else {
-			$message = __( 'Album Station is still active, but StackFolio now manages its albums. Deactivate Album Station so your album pages use StackFolio.', 'stackfolio' );
+			$message = __( 'Album Station is still active, but Coverfold now manages its albums. Deactivate Album Station so your album pages use Coverfold.', 'coverfold' );
 		}
 
 		printf(
 			'<div class="notice notice-warning"><p>%1$s <a href="%2$s">%3$s</a></p></div>',
 			esc_html( $message ),
 			esc_url( admin_url( 'plugins.php' ) ),
-			esc_html__( 'Go to Plugins', 'stackfolio' )
+			esc_html__( 'Go to Plugins', 'coverfold' )
 		);
 	}
 
@@ -421,10 +421,10 @@ class StackFolio_Migration {
 			sprintf(
 				/* translators: %d: number of albums. */
 				_n(
-					'StackFolio moved %d album from Album Station. You can now delete Album Station.',
-					'StackFolio moved %d albums from Album Station. You can now delete Album Station.',
+					'Coverfold moved %d album from Album Station. You can now delete Album Station.',
+					'Coverfold moved %d albums from Album Station. You can now delete Album Station.',
 					$moved,
-					'stackfolio'
+					'coverfold'
 				),
 				$moved
 			)

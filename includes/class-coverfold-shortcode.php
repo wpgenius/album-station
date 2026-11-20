@@ -1,8 +1,8 @@
 <?php
 /**
- * [stackfolio] shortcode (and the legacy [feature_album]).
+ * [coverfold] shortcode (and the legacy [feature_album]).
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,13 +10,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Shortcode wrapper around the renderer.
  */
-class StackFolio_Shortcode {
+class Coverfold_Shortcode {
 
 	/**
 	 * Hook everything up.
 	 */
 	public static function init() {
-		add_shortcode( 'stackfolio', array( __CLASS__, 'render' ) );
+		add_shortcode( 'coverfold', array( __CLASS__, 'render' ) );
 		add_action( 'init', array( __CLASS__, 'register_legacy' ), 20 );
 	}
 
@@ -30,7 +30,7 @@ class StackFolio_Shortcode {
 	}
 
 	/**
-	 * Render [stackfolio].
+	 * Render [coverfold].
 	 *
 	 * Attributes: category, ids, number, orderby, order, columns, columns_tablet,
 	 * columns_mobile, gap, title, title_tag, count, filters, all, all_label,
@@ -41,7 +41,7 @@ class StackFolio_Shortcode {
 	 * @return string
 	 */
 	public static function render( $atts ) {
-		$defaults = StackFolio_Renderer::defaults();
+		$defaults = Coverfold_Renderer::defaults();
 		$atts     = shortcode_atts(
 			array(
 				'category'       => '',
@@ -73,10 +73,10 @@ class StackFolio_Shortcode {
 				'class'          => '',
 			),
 			$atts,
-			'stackfolio'
+			'coverfold'
 		);
 
-		return StackFolio_Renderer::render(
+		return Coverfold_Renderer::render(
 			array(
 				'categories'          => $atts['category'],
 				'include'             => $atts['ids'],
@@ -115,7 +115,7 @@ class StackFolio_Shortcode {
 	 * @return string
 	 */
 	public static function render_legacy() {
-		return StackFolio_Renderer::render(
+		return Coverfold_Renderer::render(
 			array(
 				'columns'    => 3,
 				'show_title' => false,
