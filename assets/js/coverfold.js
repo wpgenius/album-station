@@ -43,6 +43,7 @@
 					labels: l10n.labels || {},
 					onClose() {
 						isOpen = false;
+						card.focus();
 					},
 				} )
 			);
