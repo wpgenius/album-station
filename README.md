@@ -22,7 +22,7 @@ Coverfold is the successor of Album Station and migrates its albums automaticall
 | `includes/elementor/` | Elementor widget (+ hidden Album Station compatibility widget) |
 | `includes/class-coverfold-shortcode.php` | `[coverfold]` and legacy `[feature_album]` |
 | `includes/class-coverfold-migration.php` | One-time Album Station migration |
-| `assets/vendor/` | lightGallery 2.9.0 and Isotope 3.0.6 (GPLv3), Vimeo Player API 2.30.4 (MIT) |
+| `assets/vendor/` | lightGallery 2.9.0 (GPLv3), Vimeo Player API 2.30.4 (MIT) |
 
 ## Try it in your browser
 

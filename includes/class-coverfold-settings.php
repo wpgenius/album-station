@@ -169,8 +169,8 @@ class Coverfold_Settings {
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'post_type'                => Coverfold_Post_Type::POST_TYPE,
-					'page'                     => self::PAGE,
+					'post_type'               => Coverfold_Post_Type::POST_TYPE,
+					'page'                    => self::PAGE,
 					'coverfold-cache-cleared' => 1,
 				),
 				admin_url( 'edit.php' )
