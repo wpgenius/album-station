@@ -2,7 +2,7 @@
 /**
  * Video link parsing and remote video data.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,13 +10,13 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Turns YouTube / YouTube playlist / Vimeo links into lightGallery items.
  */
-class StackFolio_Videos {
+class Coverfold_Videos {
 
 	const CACHE_TTL       = 12 * HOUR_IN_SECONDS;
 	const ERROR_CACHE_TTL = HOUR_IN_SECONDS;
 	// Old data is kept this long and shown while a fresh copy is fetched in the background.
 	const STALE_TTL    = 30 * DAY_IN_SECONDS;
-	const REFRESH_HOOK = 'stackfolio_refresh_video_data';
+	const REFRESH_HOOK = 'coverfold_refresh_video_data';
 
 	/**
 	 * Hook everything up.
@@ -107,7 +107,7 @@ class StackFolio_Videos {
 		 *
 		 * @param int $timeout Seconds.
 		 */
-		return max( 1, (int) apply_filters( 'stackfolio_remote_timeout', 3 ) );
+		return max( 1, (int) apply_filters( 'coverfold_remote_timeout', 3 ) );
 	}
 
 	/**
@@ -245,7 +245,7 @@ class StackFolio_Videos {
 					$data    = self::vimeo_data( $video['url'] );
 					$items[] = array(
 						'src'     => $video['url'],
-						'thumb'   => $data['thumb'] ? $data['thumb'] : STACKFOLIO_URL . 'assets/images/video-thumb.svg',
+						'thumb'   => $data['thumb'] ? $data['thumb'] : COVERFOLD_URL . 'assets/images/video-thumb.svg',
 						'subHtml' => $data['title'] ? '<h4>' . esc_html( $data['title'] ) . '</h4>' : '',
 					);
 					break;
@@ -272,7 +272,7 @@ class StackFolio_Videos {
 	 * @return array[] Each { id, title, thumb }.
 	 */
 	public static function playlist_videos( $playlist_id, $force = false ) {
-		$api_key = StackFolio_Settings::get( 'youtube_api_key' );
+		$api_key = Coverfold_Settings::get( 'youtube_api_key' );
 		if ( '' === $api_key ) {
 			return array();
 		}
@@ -289,7 +289,7 @@ class StackFolio_Videos {
 		 * @param int    $max         Number of videos.
 		 * @param string $playlist_id Playlist ID.
 		 */
-		$max = min( 50, max( 1, (int) apply_filters( 'stackfolio_playlist_max_videos', 50, $playlist_id ) ) );
+		$max = min( 50, max( 1, (int) apply_filters( 'coverfold_playlist_max_videos', 50, $playlist_id ) ) );
 
 		$url = add_query_arg(
 			array(
@@ -375,15 +375,15 @@ class StackFolio_Videos {
 	 * @return string
 	 */
 	private static function cache_key( $key ) {
-		$version = (int) get_option( 'stackfolio_cache_version', 1 );
+		$version = (int) get_option( 'coverfold_cache_version', 1 );
 		// "v2": entries now hold { data, fresh_until }.
-		return 'stackfolio_' . $version . '_' . md5( 'v2_' . $key );
+		return 'coverfold_' . $version . '_' . md5( 'v2_' . $key );
 	}
 
 	/**
 	 * Invalidate all cached remote video data.
 	 */
 	public static function flush_cache() {
-		update_option( 'stackfolio_cache_version', (int) get_option( 'stackfolio_cache_version', 1 ) + 1, false );
+		update_option( 'coverfold_cache_version', (int) get_option( 'coverfold_cache_version', 1 ) + 1, false );
 	}
 }

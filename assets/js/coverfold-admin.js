@@ -1,21 +1,21 @@
-/* global jQuery, stackfolioAdmin */
+/* global jQuery, coverfoldAdmin */
 ( function ( $ ) {
 	'use strict';
 
 	$( function () {
-		const $list = $( '#stackfolio-media-list' );
+		const $list = $( '#coverfold-media-list' );
 
 		if ( ! $list.length ) {
 			return;
 		}
 
-		const $input = $( '#stackfolio-media' );
-		const $clear = $( '#stackfolio-clear-media' );
+		const $input = $( '#coverfold-media' );
+		const $clear = $( '#coverfold-clear-media' );
 		let frame;
 
 		function sync() {
 			const ids = $list
-				.children( '.stackfolio-media-item' )
+				.children( '.coverfold-media-item' )
 				.map( function () {
 					return $( this ).data( 'id' );
 				} )
@@ -25,7 +25,7 @@
 		}
 
 		function itemHtml( attachment ) {
-			const $li = $( '<li class="stackfolio-media-item"></li>' ).attr(
+			const $li = $( '<li class="coverfold-media-item"></li>' ).attr(
 				'data-id',
 				attachment.id
 			);
@@ -36,8 +36,8 @@
 					)
 					.append(
 						$(
-							'<span class="stackfolio-media-item__name"></span>'
-						).text( attachment.title || stackfolioAdmin.video )
+							'<span class="coverfold-media-item__name"></span>'
+						).text( attachment.title || coverfoldAdmin.video )
 					);
 			} else {
 				const size =
@@ -48,22 +48,22 @@
 			}
 			$li.append(
 				$(
-					'<button type="button" class="stackfolio-media-item__remove">&times;</button>'
-				).attr( 'aria-label', stackfolioAdmin.remove )
+					'<button type="button" class="coverfold-media-item__remove">&times;</button>'
+				).attr( 'aria-label', coverfoldAdmin.remove )
 			);
 			return $li;
 		}
 
 		$list.sortable( {
-			items: '.stackfolio-media-item',
+			items: '.coverfold-media-item',
 			placeholder:
-				'stackfolio-media-item stackfolio-media-item--placeholder',
+				'coverfold-media-item coverfold-media-item--placeholder',
 			tolerance: 'pointer',
 			update: sync,
 		} );
 
-		$list.on( 'click', '.stackfolio-media-item__remove', function () {
-			$( this ).closest( '.stackfolio-media-item' ).remove();
+		$list.on( 'click', '.coverfold-media-item__remove', function () {
+			$( this ).closest( '.coverfold-media-item' ).remove();
 			sync();
 		} );
 
@@ -72,7 +72,7 @@
 			sync();
 		} );
 
-		$( '#stackfolio-add-media' ).on( 'click', function ( e ) {
+		$( '#coverfold-add-media' ).on( 'click', function ( e ) {
 			e.preventDefault();
 
 			if ( frame ) {
@@ -81,8 +81,8 @@
 			}
 
 			frame = wp.media( {
-				title: stackfolioAdmin.frameTitle,
-				button: { text: stackfolioAdmin.frameButton },
+				title: coverfoldAdmin.frameTitle,
+				button: { text: coverfoldAdmin.frameButton },
 				library: { type: [ 'image', 'video' ] },
 				multiple: 'add',
 			} );

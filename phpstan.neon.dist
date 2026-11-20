@@ -9,11 +9,11 @@ parameters:
 	level: 5
 	phpVersion: 70400
 	paths:
-		- stackfolio.php
+		- coverfold.php
 		- uninstall.php
 		- includes
 	bootstrapFiles:
 		- tests/phpstan/bootstrap.php
-	# Elementor isn't installed in CI; these stubs describe the parts StackFolio uses.
+	# Elementor isn't installed in CI; these stubs describe the parts Coverfold uses.
 	scanFiles:
 		- tests/phpstan/elementor-stubs.php

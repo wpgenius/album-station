@@ -5,7 +5,7 @@ name: CI
 # Standards, JS/CSS lint, and the official WordPress Plugin Check on the plugin
 # as it ships (the release zip).
 #
-# StackFolio: adapted from the standard. The block is plain JavaScript with no
+# Coverfold: adapted from the standard. The block is plain JavaScript with no
 # build step, so there is no block-build check, and there are no integration
 # tests or rename script yet, so those jobs are left out.
 #

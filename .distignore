@@ -66,7 +66,7 @@ phpunit-integration.xml.dist
 .phpunit.cache
 
 # Block sources: `npm run build` compiles them into build/, which ships
-# StackFolio: blocks/ is NOT excluded. The block is plain JavaScript with no
+# Coverfold: blocks/ is NOT excluded. The block is plain JavaScript with no
 # build step, so blocks/album-grid/ is the runtime code and must ship.
 # /blocks
 

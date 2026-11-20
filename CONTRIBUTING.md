@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve StackFolio.
+Thanks for helping improve Coverfold.
 
 ## How a change gets in
 
@@ -47,7 +47,7 @@ CI runs the same checks, plus WordPress Plugin Check, on every pull request.
 
 - Follow the [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/);
   PHPCS enforces them.
-- One class per file in `includes/`, named `class-stackfolio-*.php` after the
+- One class per file in `includes/`, named `class-coverfold-*.php` after the
   class. See "Structure" in the README.
 - The block in `blocks/album-grid/` is plain JavaScript with no build step;
   edit `index.js` directly.

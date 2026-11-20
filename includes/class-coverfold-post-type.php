@@ -2,7 +2,7 @@
 /**
  * Album post type and category taxonomy.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -10,11 +10,11 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Registers the album post type, its taxonomy, image size and admin columns.
  */
-class StackFolio_Post_Type {
+class Coverfold_Post_Type {
 
-	const POST_TYPE  = 'stackfolio_album';
-	const TAXONOMY   = 'stackfolio_category';
-	const IMAGE_SIZE = 'stackfolio-cover';
+	const POST_TYPE  = 'coverfold_album';
+	const TAXONOMY   = 'coverfold_category';
+	const IMAGE_SIZE = 'coverfold-cover';
 
 	/**
 	 * Hook everything up.
@@ -73,28 +73,28 @@ class StackFolio_Post_Type {
 	 */
 	public static function register() {
 		$labels = array(
-			'name'                  => _x( 'Albums', 'post type general name', 'stackfolio' ),
-			'singular_name'         => _x( 'Album', 'post type singular name', 'stackfolio' ),
-			'menu_name'             => _x( 'StackFolio', 'admin menu', 'stackfolio' ),
-			'all_items'             => __( 'All Albums', 'stackfolio' ),
-			'add_new'               => __( 'Add New Album', 'stackfolio' ),
-			'add_new_item'          => __( 'Add New Album', 'stackfolio' ),
-			'edit_item'             => __( 'Edit Album', 'stackfolio' ),
-			'new_item'              => __( 'New Album', 'stackfolio' ),
-			'view_item'             => __( 'View Album', 'stackfolio' ),
-			'view_items'            => __( 'View Albums', 'stackfolio' ),
-			'search_items'          => __( 'Search Albums', 'stackfolio' ),
-			'not_found'             => __( 'No albums found.', 'stackfolio' ),
-			'not_found_in_trash'    => __( 'No albums found in Trash.', 'stackfolio' ),
-			'featured_image'        => __( 'Album cover', 'stackfolio' ),
-			'set_featured_image'    => __( 'Set album cover', 'stackfolio' ),
-			'remove_featured_image' => __( 'Remove album cover', 'stackfolio' ),
-			'use_featured_image'    => __( 'Use as album cover', 'stackfolio' ),
-			'insert_into_item'      => __( 'Insert into album', 'stackfolio' ),
-			'uploaded_to_this_item' => __( 'Uploaded to this album', 'stackfolio' ),
-			'filter_items_list'     => __( 'Filter albums list', 'stackfolio' ),
-			'items_list_navigation' => __( 'Albums list navigation', 'stackfolio' ),
-			'items_list'            => __( 'Albums list', 'stackfolio' ),
+			'name'                  => _x( 'Albums', 'post type general name', 'coverfold' ),
+			'singular_name'         => _x( 'Album', 'post type singular name', 'coverfold' ),
+			'menu_name'             => _x( 'Coverfold', 'admin menu', 'coverfold' ),
+			'all_items'             => __( 'All Albums', 'coverfold' ),
+			'add_new'               => __( 'Add New Album', 'coverfold' ),
+			'add_new_item'          => __( 'Add New Album', 'coverfold' ),
+			'edit_item'             => __( 'Edit Album', 'coverfold' ),
+			'new_item'              => __( 'New Album', 'coverfold' ),
+			'view_item'             => __( 'View Album', 'coverfold' ),
+			'view_items'            => __( 'View Albums', 'coverfold' ),
+			'search_items'          => __( 'Search Albums', 'coverfold' ),
+			'not_found'             => __( 'No albums found.', 'coverfold' ),
+			'not_found_in_trash'    => __( 'No albums found in Trash.', 'coverfold' ),
+			'featured_image'        => __( 'Album cover', 'coverfold' ),
+			'set_featured_image'    => __( 'Set album cover', 'coverfold' ),
+			'remove_featured_image' => __( 'Remove album cover', 'coverfold' ),
+			'use_featured_image'    => __( 'Use as album cover', 'coverfold' ),
+			'insert_into_item'      => __( 'Insert into album', 'coverfold' ),
+			'uploaded_to_this_item' => __( 'Uploaded to this album', 'coverfold' ),
+			'filter_items_list'     => __( 'Filter albums list', 'coverfold' ),
+			'items_list_navigation' => __( 'Albums list navigation', 'coverfold' ),
+			'items_list'            => __( 'Albums list', 'coverfold' ),
 		);
 
 		$args = array(
@@ -118,21 +118,21 @@ class StackFolio_Post_Type {
 		 *
 		 * @param array $args Post type arguments.
 		 */
-		register_post_type( self::POST_TYPE, apply_filters( 'stackfolio_post_type_args', $args ) );
+		register_post_type( self::POST_TYPE, apply_filters( 'coverfold_post_type_args', $args ) );
 
 		$tax_labels = array(
-			'name'          => _x( 'Album Categories', 'taxonomy general name', 'stackfolio' ),
-			'singular_name' => _x( 'Album Category', 'taxonomy singular name', 'stackfolio' ),
-			'menu_name'     => __( 'Categories', 'stackfolio' ),
-			'all_items'     => __( 'All Categories', 'stackfolio' ),
-			'edit_item'     => __( 'Edit Category', 'stackfolio' ),
-			'view_item'     => __( 'View Category', 'stackfolio' ),
-			'update_item'   => __( 'Update Category', 'stackfolio' ),
-			'add_new_item'  => __( 'Add New Category', 'stackfolio' ),
-			'new_item_name' => __( 'New Category Name', 'stackfolio' ),
-			'parent_item'   => __( 'Parent Category', 'stackfolio' ),
-			'search_items'  => __( 'Search Categories', 'stackfolio' ),
-			'not_found'     => __( 'No categories found.', 'stackfolio' ),
+			'name'          => _x( 'Album Categories', 'taxonomy general name', 'coverfold' ),
+			'singular_name' => _x( 'Album Category', 'taxonomy singular name', 'coverfold' ),
+			'menu_name'     => __( 'Categories', 'coverfold' ),
+			'all_items'     => __( 'All Categories', 'coverfold' ),
+			'edit_item'     => __( 'Edit Category', 'coverfold' ),
+			'view_item'     => __( 'View Category', 'coverfold' ),
+			'update_item'   => __( 'Update Category', 'coverfold' ),
+			'add_new_item'  => __( 'Add New Category', 'coverfold' ),
+			'new_item_name' => __( 'New Category Name', 'coverfold' ),
+			'parent_item'   => __( 'Parent Category', 'coverfold' ),
+			'search_items'  => __( 'Search Categories', 'coverfold' ),
+			'not_found'     => __( 'No categories found.', 'coverfold' ),
 		);
 
 		$tax_args = array(
@@ -151,7 +151,7 @@ class StackFolio_Post_Type {
 		 *
 		 * @param array $tax_args Taxonomy arguments.
 		 */
-		register_taxonomy( self::TAXONOMY, array( self::POST_TYPE ), apply_filters( 'stackfolio_taxonomy_args', $tax_args ) );
+		register_taxonomy( self::TAXONOMY, array( self::POST_TYPE ), apply_filters( 'coverfold_taxonomy_args', $tax_args ) );
 	}
 
 	/**
@@ -171,11 +171,11 @@ class StackFolio_Post_Type {
 		$new = array();
 		foreach ( $columns as $key => $label ) {
 			if ( 'title' === $key ) {
-				$new['stackfolio_cover'] = __( 'Cover', 'stackfolio' );
+				$new['coverfold_cover'] = __( 'Cover', 'coverfold' );
 			}
 			$new[ $key ] = $label;
 			if ( 'title' === $key ) {
-				$new['stackfolio_items'] = __( 'Items', 'stackfolio' );
+				$new['coverfold_items'] = __( 'Items', 'coverfold' );
 			}
 		}
 		return $new;
@@ -188,15 +188,15 @@ class StackFolio_Post_Type {
 	 * @param int    $post_id Album ID.
 	 */
 	public static function column_content( $column, $post_id ) {
-		if ( 'stackfolio_cover' === $column ) {
+		if ( 'coverfold_cover' === $column ) {
 			echo get_the_post_thumbnail( $post_id, array( 60, 60 ) );
-		} elseif ( 'stackfolio_items' === $column ) {
-			$media  = StackFolio_Album::get_media_ids( $post_id );
-			$videos = StackFolio_Album::get_video_links( $post_id );
+		} elseif ( 'coverfold_items' === $column ) {
+			$media  = Coverfold_Album::get_media_ids( $post_id );
+			$videos = Coverfold_Album::get_video_links( $post_id );
 			echo esc_html(
 				sprintf(
 					/* translators: 1: number of media files, 2: number of video links. */
-					__( '%1$d media, %2$d video links', 'stackfolio' ),
+					__( '%1$d media, %2$d video links', 'coverfold' ),
 					count( $media ),
 					count( $videos )
 				)
@@ -212,6 +212,6 @@ class StackFolio_Post_Type {
 	 * @return string
 	 */
 	public static function title_placeholder( $text, $post ) {
-		return self::POST_TYPE === $post->post_type ? __( 'Album name', 'stackfolio' ) : $text;
+		return self::POST_TYPE === $post->post_type ? __( 'Album name', 'coverfold' ) : $text;
 	}
 }

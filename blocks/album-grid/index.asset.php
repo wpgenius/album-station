@@ -2,7 +2,7 @@
 /**
  * Editor script dependencies (the block editor script is plain JS, no build step).
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 return array(

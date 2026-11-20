@@ -1,15 +1,15 @@
 <?php
 /**
- * Tests for video link parsing in includes/class-stackfolio-videos.php.
+ * Tests for video link parsing in includes/class-coverfold-videos.php.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
-namespace StackFolio\Tests\Unit;
+namespace Coverfold\Tests\Unit;
 
 use Brain\Monkey\Functions;
-use StackFolio\Tests\TestCase;
-use StackFolio_Videos;
+use Coverfold\Tests\TestCase;
+use Coverfold_Videos;
 
 /**
  * Video link parsing tests.
@@ -64,7 +64,7 @@ class VideosTest extends TestCase {
 	 * @param string|null $id   Expected ID.
 	 */
 	public function test_parse( $link, $type, $id ) {
-		$video = StackFolio_Videos::parse( $link );
+		$video = Coverfold_Videos::parse( $link );
 
 		if ( null === $type ) {
 			$this->assertNull( $video );
@@ -76,7 +76,7 @@ class VideosTest extends TestCase {
 	}
 
 	public function test_private_vimeo_hash_is_kept_in_url() {
-		$video = StackFolio_Videos::parse( 'https://player.vimeo.com/video/76979871?h=abc123' );
+		$video = Coverfold_Videos::parse( 'https://player.vimeo.com/video/76979871?h=abc123' );
 
 		$this->assertSame( 'https://vimeo.com/76979871/abc123', $video['url'] );
 	}

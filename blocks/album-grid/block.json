@@ -1,14 +1,14 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "stackfolio/album-grid",
+	"name": "coverfold/album-grid",
 	"version": "1.0.0",
-	"title": "StackFolio Albums",
+	"title": "Coverfold Albums",
 	"category": "media",
 	"icon": "format-gallery",
 	"description": "A filterable grid of photo and video albums. Each cover opens the full album in a lightbox.",
 	"keywords": [ "gallery", "album", "photos", "videos", "lightbox", "portfolio" ],
-	"textdomain": "stackfolio",
+	"textdomain": "coverfold",
 	"attributes": {
 		"categories": { "type": "array", "items": { "type": "integer" }, "default": [] },
 		"number": { "type": "integer", "default": 0 },
@@ -43,6 +43,6 @@
 		"spacing": { "margin": true, "padding": true }
 	},
 	"editorScript": "file:./index.js",
-	"style": "stackfolio",
-	"viewScript": "stackfolio"
+	"style": "coverfold",
+	"viewScript": "coverfold"
 }

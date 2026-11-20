@@ -1,16 +1,16 @@
 <?php
 /**
- * StackFolio Albums block.
+ * Coverfold Albums block.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers the stackfolio/album-grid block (server-rendered).
+ * Registers the coverfold/album-grid block (server-rendered).
  */
-class StackFolio_Block {
+class Coverfold_Block {
 
 	/**
 	 * Block attribute name => renderer argument name.
@@ -58,13 +58,13 @@ class StackFolio_Block {
 	 */
 	public static function register() {
 		$block = register_block_type(
-			STACKFOLIO_PATH . 'blocks/album-grid',
+			COVERFOLD_PATH . 'blocks/album-grid',
 			array( 'render_callback' => array( __CLASS__, 'render' ) )
 		);
 
 		if ( $block && ! empty( $block->editor_script_handles ) ) {
 			foreach ( $block->editor_script_handles as $handle ) {
-				wp_set_script_translations( $handle, 'stackfolio' );
+				wp_set_script_translations( $handle, 'coverfold' );
 			}
 		}
 	}
@@ -83,7 +83,7 @@ class StackFolio_Block {
 			}
 		}
 
-		$html = StackFolio_Renderer::render( $args );
+		$html = Coverfold_Renderer::render( $args );
 		if ( '' === $html ) {
 			return '';
 		}

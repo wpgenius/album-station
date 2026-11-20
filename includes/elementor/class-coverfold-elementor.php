@@ -2,15 +2,15 @@
 /**
  * Elementor integration.
  *
- * @package StackFolio
+ * @package Coverfold
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Registers the StackFolio Elementor widget when Elementor is active.
+ * Registers the Coverfold Elementor widget when Elementor is active.
  */
-class StackFolio_Elementor {
+class Coverfold_Elementor {
 
 	/**
 	 * Hook everything up.
@@ -25,14 +25,14 @@ class StackFolio_Elementor {
 	 * @param \Elementor\Widgets_Manager $widgets_manager Widgets manager.
 	 */
 	public static function register_widgets( $widgets_manager ) {
-		require_once __DIR__ . '/class-stackfolio-elementor-widget.php';
-		$widgets_manager->register( new StackFolio_Elementor_Widget() );
+		require_once __DIR__ . '/class-coverfold-elementor-widget.php';
+		$widgets_manager->register( new Coverfold_Elementor_Widget() );
 
 		// Keep pages built with Album Station's "Album Gallery" widget working,
 		// unless Album Station itself is still active and registers it.
 		if ( ! class_exists( 'AS_Elementor_Widgets' ) ) {
-			require_once __DIR__ . '/class-stackfolio-elementor-legacy-widget.php';
-			$widgets_manager->register( new StackFolio_Elementor_Legacy_Widget() );
+			require_once __DIR__ . '/class-coverfold-elementor-legacy-widget.php';
+			$widgets_manager->register( new Coverfold_Elementor_Legacy_Widget() );
 		}
 	}
 }

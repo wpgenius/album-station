@@ -1,9 +1,9 @@
 {
-	"name": "wpgenius/stackfolio",
-	"description": "StackFolio: photo and video album gallery for WordPress, with a Gutenberg block and an Elementor widget.",
+	"name": "wpgenius/coverfold",
+	"description": "Coverfold: photo and video album gallery for WordPress, with a Gutenberg block and an Elementor widget.",
 	"type": "wordpress-plugin",
 	"license": "GPL-3.0-or-later",
-	"homepage": "https://github.com/wpgenius/stackfolio",
+	"homepage": "https://github.com/wpgenius/coverfold",
 	"require": {
 		"php": ">=7.4"
 	},
@@ -34,7 +34,7 @@
 		"lint": "parallel-lint --exclude vendor --exclude node_modules .",
 		"phpcs": "phpcs",
 		"phpcbf": "phpcbf",
-		"make-pot": "wp i18n make-pot . languages/stackfolio.pot --slug=stackfolio --domain=stackfolio --exclude=vendor,node_modules,assets/vendor",
+		"make-pot": "wp i18n make-pot . languages/coverfold.pot --slug=coverfold --domain=coverfold --exclude=vendor,node_modules,assets/vendor",
 		"test": "phpunit",
 		"phpstan": "phpstan analyse --memory-limit=1G"
 	},
@@ -48,7 +48,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"StackFolio\\Tests\\": "tests/"
+			"Coverfold\\Tests\\": "tests/"
 		}
 	}
 }

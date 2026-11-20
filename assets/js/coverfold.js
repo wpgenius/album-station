@@ -1,5 +1,5 @@
 /**
- * StackFolio front end: category filters (Isotope) and album lightbox (lightGallery).
+ * Coverfold front end: category filters (Isotope) and album lightbox (lightGallery).
  */
 ( function () {
 	'use strict';
@@ -14,7 +14,7 @@
 
 	function getConfig( root ) {
 		try {
-			return JSON.parse( root.getAttribute( 'data-stackfolio' ) ) || {};
+			return JSON.parse( root.getAttribute( 'data-coverfold' ) ) || {};
 		} catch {
 			return {};
 		}
@@ -27,7 +27,7 @@
 		if ( isOpen ) {
 			return;
 		}
-		const root = card.closest( '.stackfolio' );
+		const root = card.closest( '.coverfold' );
 		const config = root ? getConfig( root ) : {};
 		let items;
 
@@ -50,9 +50,9 @@
 			} )
 			.filter( Boolean );
 
-		const classes = [ 'stackfolio-lightbox' ];
+		const classes = [ 'coverfold-lightbox' ];
 		if ( config.hideThumbsFullscreen ) {
-			classes.push( 'stackfolio-lightbox--hide-thumbs-fs' );
+			classes.push( 'coverfold-lightbox--hide-thumbs-fs' );
 		}
 
 		const gallery = window.lightGallery( card, {
@@ -98,22 +98,22 @@
 	}
 
 	function initFilters( root ) {
-		const grid = root.querySelector( '.stackfolio-grid' );
+		const grid = root.querySelector( '.coverfold-grid' );
 		const buttons = Array.prototype.slice.call(
-			root.querySelectorAll( '.stackfolio-filter' )
+			root.querySelectorAll( '.coverfold-filter' )
 		);
 		if ( ! grid || ! buttons.length ) {
 			return;
 		}
 
 		const active =
-			root.querySelector( '.stackfolio-filter.is-active' ) ||
+			root.querySelector( '.coverfold-filter.is-active' ) ||
 			buttons[ 0 ];
 		let iso = null;
 
 		function applyFallback( filter ) {
 			Array.prototype.forEach.call(
-				grid.querySelectorAll( '.stackfolio-item' ),
+				grid.querySelectorAll( '.coverfold-item' ),
 				function ( item ) {
 					item.hidden = filter !== '*' && ! item.matches( filter );
 				}
@@ -122,7 +122,7 @@
 
 		if ( typeof window.Isotope === 'function' ) {
 			iso = new window.Isotope( grid, {
-				itemSelector: '.stackfolio-item',
+				itemSelector: '.coverfold-item',
 				layoutMode: 'fitRows',
 				percentPosition: true,
 				filter: active.getAttribute( 'data-filter' ),
@@ -161,16 +161,16 @@
 	function init( context ) {
 		const scope = context || document;
 		const roots =
-			scope.matches && scope.matches( '.stackfolio' )
+			scope.matches && scope.matches( '.coverfold' )
 				? [ scope ]
-				: scope.querySelectorAll( '.stackfolio' );
+				: scope.querySelectorAll( '.coverfold' );
 
 		Array.prototype.forEach.call( roots, function ( root ) {
-			if ( root.getAttribute( 'data-stackfolio-ready' ) ) {
+			if ( root.getAttribute( 'data-coverfold-ready' ) ) {
 				return;
 			}
-			root.setAttribute( 'data-stackfolio-ready', '1' );
-			if ( root.classList.contains( 'stackfolio--filterable' ) ) {
+			root.setAttribute( 'data-coverfold-ready', '1' );
+			if ( root.classList.contains( 'coverfold--filterable' ) ) {
 				initFilters( root );
 			}
 		} );
@@ -180,7 +180,7 @@
 	document.addEventListener( 'click', function ( event ) {
 		const card =
 			event.target.closest &&
-			event.target.closest( '.stackfolio .stackfolio-card[data-items]' );
+			event.target.closest( '.coverfold .coverfold-card[data-items]' );
 		if ( card ) {
 			event.preventDefault();
 			openAlbum( card );
@@ -206,7 +206,7 @@
 			return;
 		}
 		elementorHooked = true;
-		[ 'stackfolio-album-grid.default', 'as-gallery.default' ].forEach(
+		[ 'coverfold-album-grid.default', 'as-gallery.default' ].forEach(
 			function ( name ) {
 				window.elementorFrontend.hooks.addAction(
 					'frontend/element_ready/' + name,
@@ -222,5 +222,5 @@
 		window.jQuery( window ).on( 'elementor/frontend/init', hookElementor );
 	}
 
-	window.StackFolio = { init, open: openAlbum };
+	window.Coverfold = { init, open: openAlbum };
 } )();

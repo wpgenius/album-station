@@ -1,5 +1,5 @@
 /**
- * StackFolio Albums block (editor). Plain JavaScript, no build step needed.
+ * Coverfold Albums block (editor). Plain JavaScript, no build step needed.
  *
  * @param {Object} wp WordPress script globals.
  */
@@ -18,7 +18,7 @@
 		const terms = useSelect( function ( select ) {
 			return select( 'core' ).getEntityRecords(
 				'taxonomy',
-				'stackfolio_category',
+				'coverfold_category',
 				{ per_page: 100, hide_empty: false }
 			);
 		}, [] );
@@ -32,7 +32,7 @@
 				{ className: 'components-base-control__help' },
 				__(
 					'No album categories yet. All albums are shown.',
-					'stackfolio'
+					'coverfold'
 				)
 			);
 		}
@@ -43,7 +43,7 @@
 			el(
 				'p',
 				{ className: 'components-base-control__help' },
-				__( 'Leave all unticked to show every album.', 'stackfolio' )
+				__( 'Leave all unticked to show every album.', 'coverfold' )
 			),
 			terms.map( function ( term ) {
 				const checked = props.value.indexOf( term.id ) !== -1;
@@ -84,9 +84,9 @@
 			label,
 			value,
 			options: [
-				{ label: __( 'Left', 'stackfolio' ), value: 'left' },
-				{ label: __( 'Center', 'stackfolio' ), value: 'center' },
-				{ label: __( 'Right', 'stackfolio' ), value: 'right' },
+				{ label: __( 'Left', 'coverfold' ), value: 'left' },
+				{ label: __( 'Center', 'coverfold' ), value: 'center' },
+				{ label: __( 'Right', 'coverfold' ), value: 'right' },
 			],
 			onChange,
 			__nextHasNoMarginBottom: true,
@@ -103,7 +103,7 @@
 			null,
 			el(
 				c.PanelBody,
-				{ title: __( 'Albums', 'stackfolio' ), initialOpen: true },
+				{ title: __( 'Albums', 'coverfold' ), initialOpen: true },
 				el( CategoryPicker, {
 					value: a.categories || [],
 					onChange( v ) {
@@ -111,7 +111,7 @@
 					},
 				} ),
 				el( c.RangeControl, {
-					label: __( 'Number of albums (0 = all)', 'stackfolio' ),
+					label: __( 'Number of albums (0 = all)', 'coverfold' ),
 					value: a.number,
 					min: 0,
 					max: 100,
@@ -121,23 +121,23 @@
 					__nextHasNoMarginBottom: true,
 				} ),
 				el( c.SelectControl, {
-					label: __( 'Order by', 'stackfolio' ),
+					label: __( 'Order by', 'coverfold' ),
 					value: a.orderby,
 					options: [
-						{ label: __( 'Date', 'stackfolio' ), value: 'date' },
-						{ label: __( 'Title', 'stackfolio' ), value: 'title' },
+						{ label: __( 'Date', 'coverfold' ), value: 'date' },
+						{ label: __( 'Title', 'coverfold' ), value: 'title' },
 						{
 							label: __(
 								'Custom order (Order field)',
-								'stackfolio'
+								'coverfold'
 							),
 							value: 'menu_order',
 						},
 						{
-							label: __( 'Last modified', 'stackfolio' ),
+							label: __( 'Last modified', 'coverfold' ),
 							value: 'modified',
 						},
-						{ label: __( 'Random', 'stackfolio' ), value: 'rand' },
+						{ label: __( 'Random', 'coverfold' ), value: 'rand' },
 					],
 					onChange( v ) {
 						set( { orderby: v } );
@@ -145,15 +145,15 @@
 					__nextHasNoMarginBottom: true,
 				} ),
 				el( c.SelectControl, {
-					label: __( 'Order', 'stackfolio' ),
+					label: __( 'Order', 'coverfold' ),
 					value: a.order,
 					options: [
 						{
-							label: __( 'Descending', 'stackfolio' ),
+							label: __( 'Descending', 'coverfold' ),
 							value: 'DESC',
 						},
 						{
-							label: __( 'Ascending', 'stackfolio' ),
+							label: __( 'Ascending', 'coverfold' ),
 							value: 'ASC',
 						},
 					],
@@ -165,9 +165,9 @@
 			),
 			el(
 				c.PanelBody,
-				{ title: __( 'Layout', 'stackfolio' ), initialOpen: false },
+				{ title: __( 'Layout', 'coverfold' ), initialOpen: false },
 				el( c.RangeControl, {
-					label: __( 'Columns (desktop)', 'stackfolio' ),
+					label: __( 'Columns (desktop)', 'coverfold' ),
 					value: a.columns,
 					min: 1,
 					max: 6,
@@ -176,7 +176,7 @@
 					},
 				} ),
 				el( c.RangeControl, {
-					label: __( 'Columns (tablet)', 'stackfolio' ),
+					label: __( 'Columns (tablet)', 'coverfold' ),
 					value: a.columnsTablet,
 					min: 1,
 					max: 6,
@@ -185,7 +185,7 @@
 					},
 				} ),
 				el( c.RangeControl, {
-					label: __( 'Columns (mobile)', 'stackfolio' ),
+					label: __( 'Columns (mobile)', 'coverfold' ),
 					value: a.columnsMobile,
 					min: 1,
 					max: 6,
@@ -194,7 +194,7 @@
 					},
 				} ),
 				el( c.RangeControl, {
-					label: __( 'Spacing (px)', 'stackfolio' ),
+					label: __( 'Spacing (px)', 'coverfold' ),
 					value: a.gap,
 					min: 0,
 					max: 100,
@@ -203,11 +203,11 @@
 					},
 				} ),
 				el( c.SelectControl, {
-					label: __( 'Hover effect', 'stackfolio' ),
+					label: __( 'Hover effect', 'coverfold' ),
 					value: a.hover,
 					options: [
-						{ label: __( 'Zoom', 'stackfolio' ), value: 'zoom' },
-						{ label: __( 'None', 'stackfolio' ), value: 'none' },
+						{ label: __( 'Zoom', 'coverfold' ), value: 'zoom' },
+						{ label: __( 'None', 'coverfold' ), value: 'none' },
 					],
 					onChange( v ) {
 						set( { hover: v } );
@@ -218,11 +218,11 @@
 					a,
 					set,
 					'showTitle',
-					__( 'Show album titles', 'stackfolio' )
+					__( 'Show album titles', 'coverfold' )
 				),
 				a.showTitle &&
 					el( c.SelectControl, {
-						label: __( 'Title tag', 'stackfolio' ),
+						label: __( 'Title tag', 'coverfold' ),
 						value: a.titleTag,
 						options: [ 'h2', 'h3', 'h4', 'h5', 'h6', 'p' ].map(
 							function ( t ) {
@@ -240,40 +240,40 @@
 						function ( v ) {
 							set( { titleAlign: v } );
 						},
-						__( 'Title alignment', 'stackfolio' )
+						__( 'Title alignment', 'coverfold' )
 					),
 				toggle(
 					a,
 					set,
 					'showCount',
-					__( 'Show photo and video count', 'stackfolio' )
+					__( 'Show photo and video count', 'coverfold' )
 				)
 			),
 			el(
 				c.PanelBody,
 				{
-					title: __( 'Category filters', 'stackfolio' ),
+					title: __( 'Category filters', 'coverfold' ),
 					initialOpen: false,
 				},
 				toggle(
 					a,
 					set,
 					'filters',
-					__( 'Show category filters', 'stackfolio' )
+					__( 'Show category filters', 'coverfold' )
 				),
 				a.filters &&
 					toggle(
 						a,
 						set,
 						'filterAll',
-						__( 'Show an "All" button', 'stackfolio' )
+						__( 'Show an "All" button', 'coverfold' )
 					),
 				a.filters &&
 					a.filterAll &&
 					el( c.TextControl, {
-						label: __( '"All" button label', 'stackfolio' ),
+						label: __( '"All" button label', 'coverfold' ),
 						value: a.allLabel,
-						placeholder: __( 'All', 'stackfolio' ),
+						placeholder: __( 'All', 'coverfold' ),
 						onChange( v ) {
 							set( { allLabel: v } );
 						},
@@ -285,66 +285,66 @@
 						function ( v ) {
 							set( { filterAlign: v } );
 						},
-						__( 'Filter alignment', 'stackfolio' )
+						__( 'Filter alignment', 'coverfold' )
 					)
 			),
 			el(
 				c.PanelBody,
-				{ title: __( 'Lightbox', 'stackfolio' ), initialOpen: false },
+				{ title: __( 'Lightbox', 'coverfold' ), initialOpen: false },
 				toggle(
 					a,
 					set,
 					'videos',
-					__( 'Include videos', 'stackfolio' )
+					__( 'Include videos', 'coverfold' )
 				),
 				toggle(
 					a,
 					set,
 					'captions',
-					__( 'Show captions', 'stackfolio' ),
+					__( 'Show captions', 'coverfold' ),
 					__(
 						'Uses the title and caption from the Media Library.',
-						'stackfolio'
+						'coverfold'
 					)
 				),
 				toggle(
 					a,
 					set,
 					'thumbnails',
-					__( 'Thumbnail strip', 'stackfolio' )
+					__( 'Thumbnail strip', 'coverfold' )
 				),
 				a.thumbnails &&
 					toggle(
 						a,
 						set,
 						'hideThumbsFullscreen',
-						__( 'Hide thumbnails in fullscreen', 'stackfolio' )
+						__( 'Hide thumbnails in fullscreen', 'coverfold' )
 					),
-				toggle( a, set, 'zoom', __( 'Zoom', 'stackfolio' ) ),
+				toggle( a, set, 'zoom', __( 'Zoom', 'coverfold' ) ),
 				toggle(
 					a,
 					set,
 					'fullscreen',
-					__( 'Fullscreen button', 'stackfolio' )
+					__( 'Fullscreen button', 'coverfold' )
 				),
 				toggle(
 					a,
 					set,
 					'slideshow',
-					__( 'Slideshow button', 'stackfolio' )
+					__( 'Slideshow button', 'coverfold' )
 				),
 				a.slideshow &&
 					toggle(
 						a,
 						set,
 						'slideshowAutostart',
-						__( 'Start slideshow automatically', 'stackfolio' )
+						__( 'Start slideshow automatically', 'coverfold' )
 					),
 				toggle(
 					a,
 					set,
 					'download',
-					__( 'Download button', 'stackfolio' )
+					__( 'Download button', 'coverfold' )
 				)
 			)
 		);
@@ -357,7 +357,7 @@
 				c.Disabled,
 				null,
 				el( ServerSideRender, {
-					block: 'stackfolio/album-grid',
+					block: 'coverfold/album-grid',
 					attributes: a,
 					skipBlockSupportAttributes: true,
 				} )
@@ -365,7 +365,7 @@
 		);
 	}
 
-	wp.blocks.registerBlockType( 'stackfolio/album-grid', {
+	wp.blocks.registerBlockType( 'coverfold/album-grid', {
 		edit: Edit,
 		save() {
 			return null;
